@@ -14,9 +14,9 @@ const (
 
 type Certificate struct {
 	Id      int64           `gorm:"type:BIGINT AUTO_INCREMENT;PRIMARY_KEY;NOT NULL"`
-	UserId  int64           `gorm:"type:BIGINT;INDEX"`
-	Account string          `gorm:"NOT NULL;UNIQUE"`
-	Type    CertificateType `gorm:"type:TINYINT"`
+	UserId  int64           `gorm:"type:BIGINT;INDEX"` // 账号详细信息
+	Account string          `gorm:"NOT NULL;UNIQUE"`   // 账户名称（教师：工号；学生：学号；管理员：username）
+	Type    CertificateType `gorm:"type:TINYINT"`      // 账号类型
 }
 
 type CertificateStore interface {

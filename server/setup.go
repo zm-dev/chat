@@ -48,6 +48,7 @@ func setupGorm(debug bool, databaseConfig *config.DatabaseConfig) *gorm.DB {
 			if debug {
 				autoMigrate(db)
 			}
+			//db.Callback().Create().Register()
 			return db
 		}
 		log.Println(err)
@@ -61,6 +62,7 @@ func autoMigrate(db *gorm.DB) {
 	err := db.AutoMigrate(
 		&model.User{},
 		&model.Certificate{},
+		&model.Record{},
 	).Error
 	if err != nil {
 		log.Fatalf("AutoMigrate 失败！ error: %+v", err)
@@ -141,19 +143,35 @@ func setupLogger(srv *Server) *zap.Logger {
 
 func SetupServer(configPath string) *Server {
 	s := &Server{}
+
 	s.AppEnv = loadEnv(os.Getenv("APP_ENV"))
+
 	s.Debug = os.Getenv("DEBUG") == "true"
+
 	s.Logger = setupLogger(s)
+
 	s.Logger.Debug("load config...")
 	s.Conf = config.LoadConfig(configPath)
+
 	s.Logger.Debug("load filesystem...")
 	s.BaseFs = setupFilesystem(&s.Conf.Fs)
+
 	s.Logger.Debug("load redis...")
 	s.RedisClient = setupRedis(&s.Conf.Redis)
+
 	s.Logger.Debug("load database...")
 	s.DB = setupGorm(s.Debug, &s.Conf.DB)
-	s.Logger.Debug("load service...")
+
 	s.Pub = pubsub.NewPub(s.RedisClient, s.Logger)
+
+	s.Logger.Debug("load service...")
 	s.Service = service.NewService(s.DB, s.RedisClient, s.BaseFs, s.Conf, s.Pub)
+
+	s.Logger.Debug("load uploader service...")
+	s.ImageUploader = setupImageUploader(s)
+
+	s.ImageUrl = setupImageURL(s)
+
+	s.NosClient = setupNos(s)
 	return s
 }

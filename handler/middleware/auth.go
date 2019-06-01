@@ -16,7 +16,7 @@ var (
 func AuthMiddleware(c *gin.Context) {
 	isLogin := check(c)
 	if !isLogin {
-		c.Error(errors.Unauthorized())
+		_ = c.Error(errors.Unauthorized())
 		c.Abort()
 		return
 	}
@@ -24,9 +24,47 @@ func AuthMiddleware(c *gin.Context) {
 }
 
 func AdminMiddleware(c *gin.Context) {
-	user := LoggedUser(c)
-	if user == nil || !user.IsAdmin {
-		c.Error(errors.Forbidden("没有权限.", nil))
+	isLogin := check(c)
+	if !isLogin {
+		_ = c.Error(errors.Unauthorized())
+		c.Abort()
+		return
+	}
+	u := LoggedUser(c)
+	if !u.IsAdmin {
+		_ = c.Error(errors.Forbidden("没有权限"))
+		c.Abort()
+		return
+	}
+	c.Next()
+}
+
+func TeacherMiddleware(c *gin.Context) {
+	isLogin := check(c)
+	if !isLogin {
+		_ = c.Error(errors.Unauthorized())
+		c.Abort()
+		return
+	}
+	u := LoggedUser(c)
+	if !u.IsTeacher {
+		_ = c.Error(errors.Forbidden("没有权限"))
+		c.Abort()
+		return
+	}
+	c.Next()
+}
+
+func StudentMiddleware(c *gin.Context) {
+	isLogin := check(c)
+	if !isLogin {
+		_ = c.Error(errors.Unauthorized())
+		c.Abort()
+		return
+	}
+	u := LoggedUser(c)
+	if !u.IsStudent {
+		_ = c.Error(errors.Forbidden("没有权限"))
 		c.Abort()
 		return
 	}

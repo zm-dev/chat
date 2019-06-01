@@ -10,11 +10,8 @@ import (
 
 func NewHandleErrorMiddleware(serviceName string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Next() // execute all the handlers
+		c.Next()
 
-		// at this point, all the handlers finished. Let's read the errors!
-		// in this example we only will use the **last error typed as public**
-		// but you could iterate over all them since c.Errors is a slice!
 		errorToPrint := c.Errors.Last()
 		if errorToPrint != nil {
 			var ge *gerrors.GlobalError

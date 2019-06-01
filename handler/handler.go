@@ -48,31 +48,53 @@ func getInt64LimitAndOffset(c *gin.Context) (limit, offset int64) {
 
 func CreateHTTPHandler(s *server.Server) http.Handler {
 	authHandler := NewAuthHandler()
-	meHandler := NewMeHandler()
+	meHandler := NewMeHandler(s.ImageUrl)
 	if s.Debug {
 		gin.SetMode(gin.DebugMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	router := gin.Default()
-	router.Use(middleware.Gorm(s.DB))
 	router.Use(middleware.Service(s.Service))
 	router.Use(middleware.NewHandleErrorMiddleware(s.Conf.ServiceName))
-	api := router.Group("/api")
-	authRouter := api.Group("/auth")
-	{
-		authRouter.POST("/login", authHandler.Login)
-		authRouter.GET("/logout", authHandler.Logout)
-		authRouter.POST("/register", authHandler.Register)
-	}
 
+	api := router.Group("/v1/api")
+
+	authRouter := api.Group("/auth")
+	// 学生注册
+	authRouter.POST("/register", authHandler.Register)
+	// 登陆(老师、学生、管理员)
+	authRouter.POST("/login", authHandler.Login)
+
+	// uri: /v1/api/
 	authorized := api.Group("/")
 	authorized.Use(middleware.AuthMiddleware)
 	{
-		authorized.GET("/me", meHandler.Show)
+
 	}
-	adminRouter := api.Group("/")
-	adminRouter.Use(middleware.AuthMiddleware, middleware.AdminMiddleware)
+
+	// logged uri: /v1/api/auth
+	authRoute := authorized.Group("/auth")
+	{
+		authRoute.GET("/me", meHandler.Show)
+		authRoute.GET("/logout", authHandler.Logout)
+	}
+
+	// student uri: /v1/api/student
+	student := authorized.Group("/student")
+	student.Use(middleware.StudentMiddleware)
+	{
+	}
+
+	// teacher uri: /v1/api/teacher
+	teacher := authorized.Group("/teacher")
+	teacher.Use(middleware.TeacherMiddleware)
+	{
+	}
+
+	// admin uri: /v1/api/admin
+	admin := authorized.Group("/admin")
+	admin.Use(middleware.AdminMiddleware)
 	{
 	}
 	return router

@@ -9,6 +9,21 @@ type dbUser struct {
 	db *gorm.DB
 }
 
+func (u *dbUser) UserList(uType model.UserType) (users []*model.User, err error) {
+	users = make([]*model.User, 0, 4)
+	switch uType {
+	case model.TeacherType:
+		err = u.db.Model(&model.User{}).Find(&users, map[string]interface{}{"is_teacher": 1}).Error
+	case model.StudentType:
+		err = u.db.Model(&model.User{}).Find(&users, map[string]interface{}{"is_student": 1}).Error
+	case model.AdminType:
+		err = u.db.Model(&model.User{}).Find(&users, map[string]interface{}{"is_admin": 1}).Error
+	default:
+		return nil, model.ErrUserTypeNotExist
+	}
+	return
+}
+
 func (u *dbUser) UserExist(id int64) (bool, error) {
 	var count uint8
 	err := u.db.Model(model.User{}).Where(model.User{Id: id}).Count(&count).Error
@@ -16,10 +31,6 @@ func (u *dbUser) UserExist(id int64) (bool, error) {
 		return false, err
 	}
 	return count > 0, nil
-}
-
-func (u *dbUser) UserIsNotExistErr(err error) bool {
-	return model.UserIsNotExistErr(err)
 }
 
 func (u *dbUser) UserLoad(id int64) (user *model.User, err error) {
@@ -34,11 +45,11 @@ func (u *dbUser) UserLoad(id int64) (user *model.User, err error) {
 	return
 }
 
-func (u *dbUser) UserUpdate(userId int64, data map[string]interface{}) error {
-	if userId <= 0 {
+func (u *dbUser) UserUpdate(user *model.User) error {
+	if user.Id <= 0 {
 		return model.ErrUserNotExist
 	}
-	return u.db.Model(model.User{Id: userId}).Select("name", "student_num", "password", "pw_plain", "class_name", "is_admin").Updates(data).Error
+	return u.db.Omit("created_at").Save(user).Error
 }
 
 func (u *dbUser) UserCreate(user *model.User) error {

@@ -50,7 +50,7 @@ type ImageProxyConfig struct {
 type Config struct {
 	EnvVarPrefix string           `json:"env-var-prefix"`
 	ServiceName  string           `json:"service-name"`
-	ServerAddr   string           `json:"server-addr"` // addr:port
+	ServerAddr   string           `json:"server-addr"`
 	AppSalt      string           `json:"appsalt"`
 	QueueNum     int              `json:"queue-num"`
 	Fs           FilesystemConfig `json:"filesystem"`
