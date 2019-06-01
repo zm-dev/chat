@@ -1,0 +1,41 @@
+env-var-prefix: "CHAT"
+
+service-name: "chat"
+
+server-addr: ":8080"
+
+appsalt: "random string"
+
+filesystem:
+  driver: "os"
+  root: "data"
+
+database:
+  driver: "mysql"
+  host: "127.0.0.1"
+  port: "3306"
+  user: "root"
+  password: "root"
+  dbname: "cloud_disk"
+
+redis:
+  address: "127.0.0.1"
+  port: "6379"
+  password: ""
+
+ticket:
+  driver: "redis"
+  ttl: 2592000
+
+queue-num: 20
+
+nos:
+  accesskey: "xxx"
+  secretkey: "xxx"
+  bucketname: "xxx"
+  endpoint: "xxx"
+  external-endpoint: "xxx"
+
+image-proxy:
+  host: "xxx"
+  omitbaseurl: "true"
