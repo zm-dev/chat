@@ -9,6 +9,10 @@ type Ticket struct {
 	tickets sync.Map
 }
 
+func (t *Ticket) TicketIsNotExistErr(err error) bool {
+	return model.TicketIsNotExistErr(err)
+}
+
 func (t *Ticket) TicketLoad(id string) (*model.Ticket, error) {
 
 	if ticket, ok := t.tickets.Load(id); ok {
