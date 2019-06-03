@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/zm-dev/chat/handler/middleware"
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/service"
 )
@@ -18,7 +19,7 @@ type Input struct {
 }
 
 func (c *Chat) WsConn(ctx *gin.Context) {
-	userId, exists := ctx.Get("user_id")
+	userId, exists := ctx.Get(middleware.UserIdKey)
 	if !exists {
 		_ = ctx.Error(errors.New("user_id 不存在"))
 		return

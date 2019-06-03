@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	isLoginKey    = "is_login"
-	userIdKey     = "user_id"
-	loggedUserKey = "logged_user"
+	IsLoginKey    = "is_login"
+	UserIdKey     = "user_id"
+	LoggedUserKey = "logged_user"
 )
 
 func AuthMiddleware(c *gin.Context) {
@@ -90,15 +90,15 @@ func check(c *gin.Context) bool {
 }
 
 func setIsLogin(c *gin.Context, isLogin bool) {
-	c.Set(isLoginKey, isLogin)
+	c.Set(IsLoginKey, isLogin)
 }
 
 func setUserId(c *gin.Context, userId int64) {
-	c.Set(userIdKey, userId)
+	c.Set(UserIdKey, userId)
 }
 
 func CheckLogin(c *gin.Context) bool {
-	isLogin, ok := c.Get(isLoginKey)
+	isLogin, ok := c.Get(IsLoginKey)
 	if !ok {
 		return check(c)
 	}
@@ -107,16 +107,16 @@ func CheckLogin(c *gin.Context) bool {
 }
 
 func UserId(c *gin.Context) int64 {
-	userId, ok := c.Get(userIdKey)
+	userId, ok := c.Get(UserIdKey)
 	if !ok {
 		check(c)
-		return c.GetInt64(userIdKey)
+		return c.GetInt64(UserIdKey)
 	}
 	return userId.(int64)
 }
 
 func LoggedUser(c *gin.Context) *model.User {
-	user, ok := c.Get(loggedUserKey)
+	user, ok := c.Get(LoggedUserKey)
 	if !ok {
 		userId := UserId(c)
 		if userId == 0 {
@@ -126,7 +126,7 @@ func LoggedUser(c *gin.Context) *model.User {
 		if err != nil {
 			return nil
 		}
-		c.Set("loggedUserKey", userModel)
+		c.Set("LoggedUserKey", userModel)
 		return userModel
 	}
 	return user.(*model.User)
