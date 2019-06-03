@@ -6,15 +6,17 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/zm-dev/chat/model"
+	"github.com/zm-dev/chat/service"
 )
 
 type Chat struct {
-	chatService model.ChatService
+	chatService   model.ChatService
+	recordService model.RecordService
 }
 
 type Input struct {
-	SendUserId string `json:"send_user_id"`
-	Msg        string `json:"msg"`
+	ToUserId int64  `json:"to_user_id"`
+	Msg      string `json:"msg"`
 }
 
 func (c *Chat) WsConn(ctx *gin.Context) {
@@ -36,21 +38,34 @@ func (c *Chat) WsConn(ctx *gin.Context) {
 	for {
 		err := conn.ReadJSON(input)
 		if err != nil {
-			// todo 返回错误
+			// todo 错误处理
 			fmt.Println(err)
+			continue
 		}
 		msg := model.Msg{
 			SendUserId: userIdInt,
 			Data:       []byte(input.Msg),
 		}
-		err = c.chatService.SendMsg(userIdInt, &msg)
+		// websocket 发送消息
+		err = c.chatService.SendMsg(input.ToUserId, &msg)
 		if err != nil {
-			// todo 返回错误
+			// todo 错误处理
+			fmt.Println(err)
+		}
+
+		err = c.recordService.CreateRecord(&model.Record{
+			FromId: userIdInt,
+			ToId:   input.ToUserId,
+			Msg:    input.Msg,
+		})
+
+		if err != nil {
+			// todo 错误处理
 			fmt.Println(err)
 		}
 	}
 }
 
-func NewChat(chatService model.ChatService) Chat {
-	return Chat{chatService}
+func NewChat(service service.Service) Chat {
+	return Chat{service, service}
 }
