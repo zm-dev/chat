@@ -49,6 +49,8 @@ func getInt64LimitAndOffset(c *gin.Context) (limit, offset int64) {
 func CreateHTTPHandler(s *server.Server) http.Handler {
 	authHandler := NewAuthHandler()
 	meHandler := NewMeHandler(s.ImageUrl)
+	chatHandler := NewChat(s.Service)
+
 	if s.Debug {
 		gin.SetMode(gin.DebugMode)
 	} else {
@@ -70,7 +72,8 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	authorized := api.Group("/")
 	authorized.Use(middleware.AuthMiddleware)
 	{
-
+		// 建立ws连接
+		authorized.GET("/ws_conn", chatHandler.WsConn)
 	}
 
 	// logged uri: /v1/api/auth
