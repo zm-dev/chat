@@ -3,7 +3,7 @@ module github.com/zm-dev/chat_v2
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/NetEase-Object-Storage/nos-golang-sdk v0.0.0-20171031020902-cc8892cb2b05
-	github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc
+	github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc // indirect
 	github.com/bitly/go-simplejson v0.5.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
 	github.com/gin-gonic/gin v1.4.0
@@ -12,6 +12,7 @@ require (
 	github.com/go-openapi/spec v0.19.0 // indirect
 	github.com/go-openapi/swag v0.19.0 // indirect
 	github.com/go-redis/redis v6.15.0+incompatible
+	github.com/gorilla/websocket v1.4.0
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/imdario/mergo v0.3.6 // indirect
 	github.com/jinzhu/gorm v1.9.2
@@ -24,12 +25,12 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/afero v1.2.0
 	github.com/stretchr/objx v0.2.0 // indirect
-	github.com/swaggo/gin-swagger v1.1.0
-	github.com/swaggo/swag v1.5.0
+	github.com/swaggo/swag v1.5.0 // indirect
 	github.com/ugorji/go v1.1.5-pre // indirect
 	github.com/vmihailenco/msgpack v4.0.1+incompatible
 	github.com/wq1019/go-image_uploader v1.0.1
 	github.com/zm-dev/gerrors v0.0.4
+	github.com/zm-dev/go-image_uploader v0.5.4
 	go.uber.org/atomic v1.3.2 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.9.1
