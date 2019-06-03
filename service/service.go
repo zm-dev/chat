@@ -8,7 +8,6 @@ import (
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/pkg/hasher"
 	"github.com/zm-dev/chat/store"
-	"runtime"
 	"time"
 )
 
@@ -31,13 +30,14 @@ type service struct {
 func NewService(db *gorm.DB, redisClient *redis.Client, baseFs afero.Fs, conf *config.Config) Service {
 	s := store.NewStore(db, redisClient)
 	tSvc := NewTicketService(s, time.Duration(conf.Ticket.TTL)*time.Second)
-	h := hasher.NewArgon2Hasher(
-		[]byte(conf.AppSalt),
-		3,
-		32<<10,
-		uint8(runtime.NumCPU()),
-		32,
-	)
+	//h := hasher.NewBcyptHasher(
+	//	[]byte(conf.AppSalt),
+	//	3,
+	//	32<<10,
+	//	uint8(runtime.NumCPU()),
+	//	32,
+	//)
+	h := hasher.NewBcyptHasher()
 	return &service{
 		tSvc,
 		NewUserService(s, s, tSvc, h),
