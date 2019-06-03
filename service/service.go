@@ -18,6 +18,7 @@ type Service interface {
 	model.UserService
 	model.CertificateService
 	model.RecordService
+	model.ChatRoomService
 }
 
 type service struct {
@@ -25,6 +26,7 @@ type service struct {
 	model.UserService
 	model.CertificateService
 	model.RecordService
+	model.ChatRoomService
 }
 
 func NewService(db *gorm.DB, redisClient *redis.Client, baseFs afero.Fs, conf *config.Config, pub pubsub.PubQueue) Service {
@@ -42,5 +44,6 @@ func NewService(db *gorm.DB, redisClient *redis.Client, baseFs afero.Fs, conf *c
 		NewUserService(s, s, tSvc, h),
 		NewCertificateService(s),
 		NewRecordService(s),
+		NewChatRoom(s),
 	}
 }

@@ -44,7 +44,7 @@ func (c *chatRoom) ChatRoomDelete(id string) error {
 	c.chatRooms.Delete(id)
 	return nil
 }
-func NewMemoryChatRoom() model.ChatRoomStore{
+func NewMemoryChatRoom() model.ChatRoomStore {
 	return &chatRoom{
 		sync.Map{},
 	}

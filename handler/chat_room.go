@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/zm-dev/chat/chat"
 	"github.com/zm-dev/chat/model"
+	"github.com/zm-dev/chat/service"
 	"github.com/zm-dev/go-image_uploader/image_url"
 	"strings"
 	"time"
@@ -42,7 +43,7 @@ type ChatRoom struct {
 }
 
 func (cr *ChatRoom) List(c *gin.Context) {
-	chatRooms := middleware.GetService(c).ChatRoomList()
+	chatRooms := service.ChatRoomList(c.Request.Context())
 	c.JSON(200, covert2chatRoomRespList(chatRooms, cr.imageUrl))
 }
 func (cr *ChatRoom) Create(c *gin.Context) {
@@ -62,13 +63,13 @@ func (cr *ChatRoom) Create(c *gin.Context) {
 		Name:      req.Name,
 		CoverHash: req.CoverHash,
 	}
-	err := middleware.GetService(c).ChatRoomCreate(chatRoomModel)
+	err := service.ChatRoomCreate(c.Request.Context(), chatRoomModel)
 
 	chatRoom := cr.piazza.CreateChatRoom(chatRoomModel.Id)
 	go chatRoom.Run()
 
 	chatRoom.OnJoin(func(user chat.User) {
-		u, err := middleware.GetService(c).UserLoad(5)
+		u, err := service.UserLoad(c.Request.Context(), 5)
 		if err == nil {
 			chatRoom.Broadcast(&chat.Msg{
 				User:   &chat.SysUser{},
@@ -79,7 +80,7 @@ func (cr *ChatRoom) Create(c *gin.Context) {
 	})
 
 	chatRoom.OnLeave(func(user chat.User) {
-		u, err := middleware.GetService(c).UserLoad(user.GetId())
+		u, err := service.UserLoad(c.Request.Context(), user.GetId())
 		if err == nil {
 			chatRoom.Broadcast(&chat.Msg{
 				User:   &chat.SysUser{},
@@ -91,9 +92,8 @@ func (cr *ChatRoom) Create(c *gin.Context) {
 
 	chatRoom.ProcessMsg(func(msg chat.IMsg) {
 		uid := msg.GetUser().GetId()
-		user, err := middleware.GetService(c).UserLoad(uid)
+		user, err := service.UserLoad(c.Request.Context(), uid)
 		if err == nil {
-			// userResp := convert2UserResp(user, cr.imageUrl)
 			b, err := json.Marshal(user)
 			if err == nil {
 				msg.SetMeta(map[string]string{
@@ -116,7 +116,7 @@ func (cr *ChatRoom) Delete(c *gin.Context) {
 		c.Error(errors.New("参数有误"))
 		return
 	}
-	err := middleware.GetService(c).ChatRoomDelete(id)
+	err := service.ChatRoomDelete(c.Request.Context(), id)
 	if err != nil {
 		c.Error(err)
 		return
