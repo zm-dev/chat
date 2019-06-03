@@ -24,7 +24,7 @@ func (m *Msg) GetUserId() int64 {
 	if m == nil {
 		return -1
 	}
-	return m.GetUserId()
+	return m.SendUserId
 }
 
 func (m *Msg) GetData() []byte {
