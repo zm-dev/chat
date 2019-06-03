@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>测试聊天</title>
+  </head>
+  <body>
+
+  <input type="text" placeholder="发送消息">
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      const http = axios.create({
+        baseURL: "http://localhost:8080/v1/api"
+      });
+
+      http.post("auth/login", {
+        account: "taowei",
+        password: "tw19970313"
+      }).then(() => {
+
+        const ws = new WebSocket("ws://localhost:8080/v1/api/ws_conn");
+
+        ws.onopen = () => {
+          // onopen
+          console.log("WebSocket连接建立")
+        };
+
+        ws.onmessage = evt => {
+          console.log(evt);
+        };
+
+        ws.onclose = () => {
+          // onclose
+        };
+        ws.onerror = (err) => {
+          console.error(err);
+        }
+
+      });
+
+
+    </script>
+  </body>
+</html>

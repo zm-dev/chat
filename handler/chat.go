@@ -28,7 +28,11 @@ func (c *Chat) WsConn(ctx *gin.Context) {
 
 	upgrader := websocket.Upgrader{}
 	conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
+	// 用户上线
+	service.OnLine(ctx.Request.Context(), userIdInt, conn)
+
 	defer conn.Close()
+
 	if err != nil {
 		_ = ctx.Error(err)
 		return
