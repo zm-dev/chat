@@ -13,7 +13,6 @@ type Store interface {
 	model.UserStore
 	model.CertificateStore
 	model.RecordStore
-	model.ChatRoomStore
 }
 
 type store struct {
@@ -21,7 +20,6 @@ type store struct {
 	model.UserStore
 	model.CertificateStore
 	model.RecordStore
-	model.ChatRoomStore
 }
 
 func NewStore(db *gorm.DB, redisClient *redis.Client) Store {
@@ -29,6 +27,5 @@ func NewStore(db *gorm.DB, redisClient *redis.Client) Store {
 		db_store.NewDBUser(db),
 		db_store.NewDBCertificate(db),
 		db_store.NewDBRecord(db),
-		memory_store.NewMemoryChatRoom(),
 	}
 }

@@ -92,7 +92,7 @@ func TeacherList(ctx context.Context) ([]*model.User, error) {
 	return FromContext(ctx).TeacherList()
 }
 
-func StudentList(ctx context.Context) ([]*model.User, error) {
+func w(ctx context.Context) ([]*model.User, error) {
 	return FromContext(ctx).StudentList()
 }
 
