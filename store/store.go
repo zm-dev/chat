@@ -5,7 +5,6 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/store/db_store"
-	"github.com/zm-dev/chat/store/memory_store"
 	"github.com/zm-dev/chat/store/redis_store"
 )
 
