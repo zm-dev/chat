@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"github.com/rs/cors"
-	"github.com/zm-dev/chat_v2/handler"
-	"github.com/zm-dev/chat_v2/server"
+	"github.com/zm-dev/chat/handler"
+	"github.com/zm-dev/chat/server"
 	"go.uber.org/zap"
 	"log"
 	"net/http"

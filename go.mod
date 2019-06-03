@@ -1,4 +1,4 @@
-module github.com/zm-dev/chat_v2
+module github.com/zm-dev/chat
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect

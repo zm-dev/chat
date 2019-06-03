@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"github.com/zm-dev/chat_v2/chat"
+	"github.com/zm-dev/chat/chat"
 	"time"
 )
 

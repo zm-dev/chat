@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/zm-dev/chat_v2/queue"
+	"github.com/zm-dev/chat/queue"
 )
 
 func Pub(pub queue.PubQueue) gin.HandlerFunc {

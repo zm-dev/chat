@@ -1,6 +1,6 @@
 package util
 
-import "github.com/zm-dev/chat_v2/model"
+import "github.com/zm-dev/chat/model"
 
 // 转换用户性别
 func ConvertUserGender(g uint8) (gender string) {

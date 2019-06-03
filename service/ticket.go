@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/hex"
 	"github.com/satori/go.uuid"
-	"github.com/zm-dev/chat_v2/model"
+	"github.com/zm-dev/chat/model"
 	"time"
 )
 

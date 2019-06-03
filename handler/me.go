@@ -3,10 +3,10 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/wq1019/go-image_uploader/image_url"
-	"github.com/zm-dev/chat_v2/handler/middleware"
-	"github.com/zm-dev/chat_v2/model"
-	"github.com/zm-dev/chat_v2/service"
-	"github.com/zm-dev/chat_v2/util"
+	"github.com/zm-dev/chat/handler/middleware"
+	"github.com/zm-dev/chat/model"
+	"github.com/zm-dev/chat/service"
+	"github.com/zm-dev/chat/util"
 	"net/http"
 )
 

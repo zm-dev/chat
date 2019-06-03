@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
-	"github.com/zm-dev/chat_v2/queue/subscribe"
-	"github.com/zm-dev/chat_v2/server"
+	"github.com/zm-dev/chat/queue/subscribe"
+	"github.com/zm-dev/chat/server"
 	"go.uber.org/zap"
 )
 

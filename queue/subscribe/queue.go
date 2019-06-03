@@ -2,8 +2,8 @@ package subscribe
 
 import (
 	"context"
-	"github.com/zm-dev/chat_v2/pkg/pubsub"
-	"github.com/zm-dev/chat_v2/server"
+	"github.com/zm-dev/chat/pkg/pubsub"
+	"github.com/zm-dev/chat/server"
 )
 
 func StartSubQueue(svr *server.Server) {

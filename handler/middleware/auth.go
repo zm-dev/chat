@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/zm-dev/chat_v2/errors"
-	"github.com/zm-dev/chat_v2/model"
-	"github.com/zm-dev/chat_v2/service"
+	"github.com/zm-dev/chat/errors"
+	"github.com/zm-dev/chat/model"
+	"github.com/zm-dev/chat/service"
 )
 
 var (

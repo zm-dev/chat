@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/zm-dev/chat_v2/handler/middleware"
-	"github.com/zm-dev/chat_v2/server"
+	"github.com/zm-dev/chat/handler/middleware"
+	"github.com/zm-dev/chat/server"
 	"net/http"
 	"strconv"
 )

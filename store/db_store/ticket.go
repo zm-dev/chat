@@ -2,7 +2,7 @@ package db_store
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/zm-dev/chat_v2/model"
+	"github.com/zm-dev/chat/model"
 )
 
 type dbTicket struct {

@@ -2,8 +2,8 @@ package wrapper
 
 import (
 	"context"
-	"github.com/zm-dev/chat_v2/pkg/pubsub"
-	"github.com/zm-dev/chat_v2/service"
+	"github.com/zm-dev/chat/pkg/pubsub"
+	"github.com/zm-dev/chat/service"
 )
 
 type Service struct {

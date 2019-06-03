@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
-	"github.com/zm-dev/chat_v2/errors"
+	"github.com/zm-dev/chat/errors"
 	"github.com/zm-dev/gerrors"
 )
 

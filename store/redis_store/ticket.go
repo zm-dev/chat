@@ -3,7 +3,7 @@ package redis_store
 import (
 	"github.com/go-redis/redis"
 	"github.com/vmihailenco/msgpack"
-	"github.com/zm-dev/chat_v2/model"
+	"github.com/zm-dev/chat/model"
 )
 
 type redisTicket struct {

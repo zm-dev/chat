@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/zm-dev/chat_v2/model"
+	"github.com/zm-dev/chat/model"
 )
 
 type recordService struct {

@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/zm-dev/chat_v2/service"
+	"github.com/zm-dev/chat/service"
 )
 
 func Service(svc service.Service) gin.HandlerFunc {

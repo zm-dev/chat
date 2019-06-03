@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"github.com/zm-dev/chat_v2/errors"
-	"github.com/zm-dev/chat_v2/model"
-	"github.com/zm-dev/chat_v2/pkg/hasher"
+	"github.com/zm-dev/chat/errors"
+	"github.com/zm-dev/chat/model"
+	"github.com/zm-dev/chat/pkg/hasher"
 )
 
 type userService struct {
