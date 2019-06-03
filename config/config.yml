@@ -27,8 +27,6 @@ ticket:
   driver: "redis"
   ttl: 2592000
 
-queue-num: 20
-
 nos:
   accesskey: "xxx"
   secretkey: "xxx"
