@@ -4,10 +4,10 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/wq1019/go-image_uploader/image_url"
+	"github.com/zm-dev/chat/enum"
 	"github.com/zm-dev/chat/handler/middleware"
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/service"
-	"github.com/zm-dev/chat/util"
 	"net/http"
 )
 
@@ -40,7 +40,8 @@ func convert2UserResp(c context.Context, user *model.User, imageUrl image_url.UR
 		"email":      user.Email,
 		"avatarUrl":  imageUrl.Generate(user.AvatarHash),
 		"profile":    user.Profile,
-		"gender":     util.ConvertUserGender(user.Gender),
+		"gender":     enum.ParseGender(user.Gender),
+		"group":      enum.ParseGroup(user.GroupId),
 		"status":     service.IsOnline(c, user.Id),
 		"created_at": user.CreatedAt,
 		"updated_at": user.UpdatedAt,

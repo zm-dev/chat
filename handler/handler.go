@@ -51,7 +51,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	meHandler := NewMeHandler(s.ImageUrl)
 	chatHandler := NewChat(s.Service)
 	uploadImageHandler := NewUploadImage(s.ImageUploader, s.ImageUrl)
-	//userHandler := NewUserHandler(s.ImageUrl)
+	userHandler := NewUserHandler(s.ImageUrl)
 
 	if s.Debug {
 		gin.SetMode(gin.DebugMode)
@@ -85,6 +85,8 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	{
 		authRoute.GET("/me", meHandler.Show)
 		authRoute.GET("/logout", authHandler.Logout)
+		// 老师列表
+		authRoute.GET("/teacherList", userHandler.TeacherList)
 	}
 
 	// student uri: /v1/api/student

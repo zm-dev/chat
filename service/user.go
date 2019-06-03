@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/zm-dev/chat/enum"
 	"github.com/zm-dev/chat/errors"
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/pkg/hasher"
@@ -15,11 +16,11 @@ type userService struct {
 }
 
 func (uSvc *userService) TeacherList() ([]*model.User, error) {
-	return uSvc.UserStore.UserList(model.TeacherType)
+	return uSvc.UserStore.UserList(enum.TeacherType)
 }
 
 func (uSvc *userService) StudentList() ([]*model.User, error) {
-	return uSvc.UserStore.UserList(model.StudentType)
+	return uSvc.UserStore.UserList(enum.StudentType)
 }
 
 func (uSvc *userService) UserLogin(account, password string) (ticket *model.Ticket, err error) {
@@ -51,7 +52,7 @@ func (uSvc *userService) UserRegister(account string, certificateType model.Cert
 	user := &model.User{
 		Password: uSvc.h.Make(password),
 		PwPlain:  password,
-		Gender:   model.GenderSecrecy,
+		Gender:   enum.GenderSecrecy,
 		// 学生注册
 		IsStudent: true,
 	}

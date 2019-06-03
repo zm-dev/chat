@@ -2,6 +2,7 @@ package db_store
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/zm-dev/chat/enum"
 	"github.com/zm-dev/chat/model"
 )
 
@@ -9,14 +10,14 @@ type dbUser struct {
 	db *gorm.DB
 }
 
-func (u *dbUser) UserList(uType model.UserType) (users []*model.User, err error) {
+func (u *dbUser) UserList(uType enum.UserType) (users []*model.User, err error) {
 	users = make([]*model.User, 0, 4)
 	switch uType {
-	case model.TeacherType:
+	case enum.TeacherType:
 		err = u.db.Model(&model.User{}).Find(&users, map[string]interface{}{"is_teacher": 1}).Error
-	case model.StudentType:
+	case enum.StudentType:
 		err = u.db.Model(&model.User{}).Find(&users, map[string]interface{}{"is_student": 1}).Error
-	case model.AdminType:
+	case enum.AdminType:
 		err = u.db.Model(&model.User{}).Find(&users, map[string]interface{}{"is_admin": 1}).Error
 	default:
 		return nil, model.ErrUserTypeNotExist

@@ -52,3 +52,7 @@ func ErrPassword() error {
 func ErrAccountNotFound() error {
 	return gerrors.NotFound(10009, "账号不存在", nil)
 }
+
+func ErrEnumNotfound() error {
+	return gerrors.BadRequest(10010, "枚举不存在", nil)
+}
