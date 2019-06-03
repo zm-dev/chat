@@ -49,7 +49,7 @@ func getInt64LimitAndOffset(c *gin.Context) (limit, offset int64) {
 func CreateHTTPHandler(s *server.Server) http.Handler {
 	authHandler := NewAuthHandler()
 	meHandler := NewMeHandler(s.ImageUrl)
-	chatHandler := NewChat(s.Service)
+	chatHandler := NewChat()
 	uploadImageHandler := NewUploadImage(s.ImageUploader, s.ImageUrl)
 	//userHandler := NewUserHandler(s.ImageUrl)
 

@@ -10,8 +10,6 @@ import (
 )
 
 type Chat struct {
-	chatService   model.ChatService
-	recordService model.RecordService
 }
 
 type Input struct {
@@ -47,13 +45,13 @@ func (c *Chat) WsConn(ctx *gin.Context) {
 			Data:       []byte(input.Msg),
 		}
 		// websocket 发送消息
-		err = c.chatService.SendMsg(input.ToUserId, &msg)
+		err = service.SendMsg(ctx.Request.Context(), input.ToUserId, &msg)
 		if err != nil {
 			// todo 错误处理
 			fmt.Println(err)
 		}
 
-		err = c.recordService.CreateRecord(&model.Record{
+		err = service.CreateRecord(ctx.Request.Context(), &model.Record{
 			FromId: userIdInt,
 			ToId:   input.ToUserId,
 			Msg:    input.Msg,
@@ -66,6 +64,6 @@ func (c *Chat) WsConn(ctx *gin.Context) {
 	}
 }
 
-func NewChat(service service.Service) Chat {
-	return Chat{service, service}
+func NewChat() Chat {
+	return Chat{}
 }
