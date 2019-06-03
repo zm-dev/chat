@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"github.com/gorilla/websocket"
 	"github.com/zm-dev/chat/model"
@@ -19,7 +20,6 @@ func (c *ChatService) IsOnline(userId int64) bool {
 
 func (c *ChatService) SendMsg(userId int64, msg model.IMsg) error {
 	conn, ok := c.userWsConnMap.Load(userId);
-
 	if !ok {
 		return errors.New("用户不存在或不在线")
 	}
@@ -30,6 +30,18 @@ func (c *ChatService) SendMsg(userId int64, msg model.IMsg) error {
 
 func (c *ChatService) OnLine(userId int64, conn *websocket.Conn) {
 	c.userWsConnMap.Store(userId, conn)
+}
+
+func IsOnline(c context.Context, userId int64) bool {
+	return FromContext(c).IsOnline(userId)
+}
+
+func SendMsg(c context.Context, userId int64, msg model.IMsg) error {
+	return FromContext(c).SendMsg(userId, msg)
+}
+
+func OnLine(c context.Context, userId int64, conn *websocket.Conn) {
+	FromContext(c).OnLine(userId, conn)
 }
 
 func NewChatService() model.ChatService {

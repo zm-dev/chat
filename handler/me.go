@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/wq1019/go-image_uploader/image_url"
 	"github.com/zm-dev/chat/handler/middleware"
@@ -21,27 +22,26 @@ func (m *meHandler) Show(c *gin.Context) {
 		_ = c.Error(err)
 		return
 	}
-	c.JSON(http.StatusOK, convert2UserResp(user, m.imageUrl))
+	c.JSON(http.StatusOK, convert2UserResp(c.Request.Context(), user, m.imageUrl))
 }
 
-func convert2UserListResp(users []*model.User, imageUrl image_url.URL) []map[string]interface{} {
+func convert2UserListResp(c context.Context, users []*model.User, imageUrl image_url.URL) []map[string]interface{} {
 	userList := make([]map[string]interface{}, 0, len(users))
 	for _, v := range users {
-		userList = append(userList, convert2UserResp(v, imageUrl))
+		userList = append(userList, convert2UserResp(c, v, imageUrl))
 	}
 	return userList
 }
 
-func convert2UserResp(user *model.User, imageUrl image_url.URL) map[string]interface{} {
+func convert2UserResp(c context.Context, user *model.User, imageUrl image_url.URL) map[string]interface{} {
 	return map[string]interface{}{
-		"id":        user.Id,
-		"name":      user.NikeName,
-		"email":     user.Email,
-		"avatarUrl": imageUrl.Generate(user.AvatarHash),
-		"profile":   user.Profile,
-		"gender":    util.ConvertUserGender(user.Gender),
-		// TODO 状态暂时不获取
-		"status":     "在线",
+		"id":         user.Id,
+		"name":       user.NikeName,
+		"email":      user.Email,
+		"avatarUrl":  imageUrl.Generate(user.AvatarHash),
+		"profile":    user.Profile,
+		"gender":     util.ConvertUserGender(user.Gender),
+		"status":     service.IsOnline(c, user.Id),
 		"created_at": user.CreatedAt,
 		"updated_at": user.UpdatedAt,
 	}
