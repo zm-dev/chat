@@ -13,8 +13,8 @@ func (r *dbRecord) BatchSetRead(ids []int64) error {
 	return r.db.Model(&model.Record{}).Where("id IN (?)", ids).Update("is_read", 1).Error
 }
 
-func (r *dbRecord) PageRecord(page *model.Page, teacherId, studentId int64) (err error) {
-	var queryBuilder = r.db.Model(&model.Record{}).Where("teacher_id = ? AND student_id = ?", teacherId, studentId)
+func (r *dbRecord) PageRecord(page *model.Page, fromId, toId int64) (err error) {
+	var queryBuilder = r.db.Model(&model.Record{}).Where("from_id = ? AND to_id = ?", fromId, toId)
 
 	queryBuilder.Count(&page.Total)
 	page.SetPages()
@@ -23,7 +23,7 @@ func (r *dbRecord) PageRecord(page *model.Page, teacherId, studentId int64) (err
 }
 
 func (r *dbRecord) CreateRecord(record *model.Record) error {
-	return r.db.Create(record).Error;
+	return r.db.Create(record).Error
 }
 
 func NewDBRecord(db *gorm.DB) model.RecordStore {

@@ -14,7 +14,6 @@ import (
 	imageUploaderNos "github.com/wq1019/go-image_uploader/nos"
 	"github.com/zm-dev/chat/config"
 	"github.com/zm-dev/chat/model"
-	"github.com/zm-dev/chat/pkg/pubsub"
 	"github.com/zm-dev/chat/service"
 	"go.uber.org/zap"
 	"log"
@@ -48,7 +47,6 @@ func setupGorm(debug bool, databaseConfig *config.DatabaseConfig) *gorm.DB {
 			if debug {
 				autoMigrate(db)
 			}
-			//db.Callback().Create().Register()
 			return db
 		}
 		log.Println(err)
@@ -63,6 +61,7 @@ func autoMigrate(db *gorm.DB) {
 		&model.User{},
 		&model.Certificate{},
 		&model.Record{},
+		&image_uploader.Image{},
 	).Error
 	if err != nil {
 		log.Fatalf("AutoMigrate 失败！ error: %+v", err)
@@ -162,10 +161,8 @@ func SetupServer(configPath string) *Server {
 	s.Logger.Debug("load database...")
 	s.DB = setupGorm(s.Debug, &s.Conf.DB)
 
-	s.Pub = pubsub.NewPub(s.RedisClient, s.Logger)
-
 	s.Logger.Debug("load service...")
-	s.Service = service.NewService(s.DB, s.RedisClient, s.BaseFs, s.Conf, s.Pub)
+	s.Service = service.NewService(s.DB, s.RedisClient, s.BaseFs, s.Conf)
 
 	s.Logger.Debug("load uploader service...")
 	s.ImageUploader = setupImageUploader(s)

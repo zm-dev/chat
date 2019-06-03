@@ -18,14 +18,14 @@ func ConvertUserGender(g uint8) (gender string) {
 }
 
 // 转换用户在线状态
-func ConvertUserStatus(s uint8) (status string) {
-	switch s {
-	case model.UserStatusOnline:
-		status = "在线"
-	case model.UserStatusOffline:
-		status = "离线"
-	default:
-		status = ""
-	}
-	return
-}
+//func ConvertUserStatus(s uint8) (status string) {
+//	switch s {
+//	case model.UserStatusOnline:
+//		status = "在线"
+//	case model.UserStatusOffline:
+//		status = "离线"
+//	default:
+//		status = ""
+//	}
+//	return
+//}

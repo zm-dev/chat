@@ -52,7 +52,6 @@ type Config struct {
 	ServiceName  string           `json:"service-name"`
 	ServerAddr   string           `json:"server-addr"`
 	AppSalt      string           `json:"appsalt"`
-	QueueNum     int              `json:"queue-num"`
 	Fs           FilesystemConfig `json:"filesystem"`
 	DB           DatabaseConfig   `json:"database"`
 	Redis        RedisConfig      `json:"redis"`

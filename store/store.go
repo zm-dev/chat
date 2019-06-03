@@ -6,6 +6,7 @@ import (
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/store/db_store"
 	"github.com/zm-dev/chat/store/memory_store"
+	"github.com/zm-dev/chat/store/redis_store"
 )
 
 type Store interface {
@@ -23,7 +24,7 @@ type store struct {
 }
 
 func NewStore(db *gorm.DB, redisClient *redis.Client) Store {
-	return &store{memory_store.NewMemoryTicket(),
+	return &store{redis_store.NewRedisTicket(redisClient),
 		db_store.NewDBUser(db),
 		db_store.NewDBCertificate(db),
 		db_store.NewDBRecord(db),

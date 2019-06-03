@@ -8,7 +8,6 @@ import (
 	"github.com/wq1019/go-image_uploader"
 	"github.com/wq1019/go-image_uploader/image_url"
 	"github.com/zm-dev/chat/config"
-	"github.com/zm-dev/chat/pkg/pubsub"
 	"github.com/zm-dev/chat/service"
 	"go.uber.org/zap"
 )
@@ -25,5 +24,4 @@ type Server struct {
 	ImageUrl      image_url.URL
 	NosClient     *nosclient.NosClient
 	Service       service.Service
-	Pub           pubsub.PubQueue
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/zm-dev/chat/config"
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/pkg/hasher"
-	"github.com/zm-dev/chat/pkg/pubsub"
 	"github.com/zm-dev/chat/store"
 	"runtime"
 	"time"
@@ -29,7 +28,7 @@ type service struct {
 	model.ChatService
 }
 
-func NewService(db *gorm.DB, redisClient *redis.Client, baseFs afero.Fs, conf *config.Config, pub pubsub.PubQueue) Service {
+func NewService(db *gorm.DB, redisClient *redis.Client, baseFs afero.Fs, conf *config.Config) Service {
 	s := store.NewStore(db, redisClient)
 	tSvc := NewTicketService(s, time.Duration(conf.Ticket.TTL)*time.Second)
 	h := hasher.NewArgon2Hasher(

@@ -12,8 +12,8 @@ type User struct {
 	NikeName   string    `gorm:"type:varchar(50)" json:"nike_name"`         // 昵称
 	Profile    string    `gorm:"type:varchar(255)" json:"profile"`          // 简介
 	Gender     uint8     `gorm:"type:TINYINT;DEFAULT:0" json:"gender"`      // 性别
+	GroupId    uint8     `gorm:"type:TINYINT;DEFAULT:0" json:"group"`       // 组
 	Password   string    `gorm:"type:varchar(64);NOT NULL" json:"password"` // 密码
-	Status     uint8     `gorm:"type:TINYINT;DEFAULT:0" json:"status"`      // 在线状态
 	PwPlain    string    `gorm:"type:varchar(20);not null" json:"-"`        // 密码明文
 	IsAdmin    bool      `gorm:"type:TINYINT" json:"is_admin"`              // 管理员
 	IsTeacher  bool      `gorm:"type:TINYINT" json:"is_teacher"`            // 教师
@@ -23,6 +23,7 @@ type User struct {
 }
 
 type UserType int8
+type Group int8
 
 const (
 	TeacherType UserType = iota
@@ -37,8 +38,9 @@ const (
 )
 
 const (
-	UserStatusOnline = iota
-	UserStatusOffline
+	TeacherGroup Group = iota // 老师
+	AlumnusGroup              // 校友
+	PBFGroup                  // 朋辈辅导员
 )
 
 var ErrUserNotExist = errors.New("user is not exist")

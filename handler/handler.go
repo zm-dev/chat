@@ -50,6 +50,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	authHandler := NewAuthHandler()
 	meHandler := NewMeHandler(s.ImageUrl)
 	chatHandler := NewChat(s.Service)
+	uploadImageHandler := NewUploadImage(s.ImageUploader, s.ImageUrl)
 
 	if s.Debug {
 		gin.SetMode(gin.DebugMode)
@@ -74,6 +75,8 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	{
 		// 建立ws连接
 		authorized.GET("/ws_conn", chatHandler.WsConn)
+		// 上传图片
+		authorized.POST("/upload_image", uploadImageHandler.UploadImage)
 	}
 
 	// logged uri: /v1/api/auth

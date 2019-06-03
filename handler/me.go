@@ -34,13 +34,14 @@ func convert2UserListResp(users []*model.User, imageUrl image_url.URL) []map[str
 
 func convert2UserResp(user *model.User, imageUrl image_url.URL) map[string]interface{} {
 	return map[string]interface{}{
-		"id":         user.Id,
-		"name":       user.NikeName,
-		"email":      user.Email,
-		"avatarUrl":  imageUrl.Generate(user.AvatarHash),
-		"profile":    user.Profile,
-		"gender":     util.ConvertUserGender(user.Gender),
-		"status":     util.ConvertUserStatus(user.Status),
+		"id":        user.Id,
+		"name":      user.NikeName,
+		"email":     user.Email,
+		"avatarUrl": imageUrl.Generate(user.AvatarHash),
+		"profile":   user.Profile,
+		"gender":    util.ConvertUserGender(user.Gender),
+		// TODO 状态暂时不获取
+		"status":     "在线",
 		"created_at": user.CreatedAt,
 		"updated_at": user.UpdatedAt,
 	}
