@@ -38,12 +38,12 @@ func (r *dbRecord) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShow
 	return
 }
 
-func (r *dbRecord) CreateRecord(record *model.Record) error {
+func (r *dbRecord) CreateRecord(record *model.Record) (int64, error) {
 	record.CreatedAt = time.Now().UnixNano()
 	tx := r.db.Begin()
 	if err := tx.Create(record).Error; err != nil {
 		tx.Rollback()
-		return err
+		return 0, err
 	}
 	lastRecord := &model.LastRecord{
 		FromId:   record.FromId,
@@ -52,10 +52,10 @@ func (r *dbRecord) CreateRecord(record *model.Record) error {
 	}
 	if err := tx.Create(lastRecord).Error; err != nil {
 		tx.Rollback()
-		return err
+		return 0, err
 	}
 	tx.Commit()
-	return nil
+	return record.Id, nil
 }
 
 func NewDBRecord(db *gorm.DB) model.RecordStore {

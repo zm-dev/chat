@@ -8,6 +8,7 @@ import (
 	"github.com/zm-dev/chat/handler/middleware"
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/service"
+	"strconv"
 )
 
 type Chat struct {
@@ -46,9 +47,25 @@ func (c *Chat) WsConn(ctx *gin.Context) {
 			break
 		}
 
+
+		recordId, err := service.CreateRecord(ctx.Request.Context(), &model.Record{
+			FromId: userIdInt,
+			ToId:   input.ToUserId,
+			Msg:    input.Msg,
+		})
+
+		if err != nil {
+			// 创建消息失败
+			continue
+		}
+
 		msg := model.Msg{
 			SendUserId: userIdInt,
 			Data:       []byte(input.Msg),
+			Meta: map[string]string{
+				"msg_type": "record",
+				"record_id":  strconv.FormatInt(recordId, 10),
+			},
 		}
 
 		// websocket 发送消息
@@ -58,16 +75,6 @@ func (c *Chat) WsConn(ctx *gin.Context) {
 			fmt.Println(err)
 		}
 
-		err = service.CreateRecord(ctx.Request.Context(), &model.Record{
-			FromId: userIdInt,
-			ToId:   input.ToUserId,
-			Msg:    input.Msg,
-		})
-
-		if err != nil {
-			// todo 错误处理
-			fmt.Println(err)
-		}
 	}
 
 	conn.Close()
