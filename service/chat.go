@@ -32,6 +32,10 @@ func (c *ChatService) OnLine(userId int64, conn *websocket.Conn) {
 	c.userWsConnMap.Store(userId, conn)
 }
 
+func (c *ChatService) OffLine(userId int64) {
+	c.userWsConnMap.Delete(userId)
+}
+
 func IsOnline(c context.Context, userId int64) bool {
 	return FromContext(c).IsOnline(userId)
 }
@@ -42,6 +46,10 @@ func SendMsg(c context.Context, userId int64, msg model.IMsg) error {
 
 func OnLine(c context.Context, userId int64, conn *websocket.Conn) {
 	FromContext(c).OnLine(userId, conn)
+}
+
+func OffLine(c context.Context, userId int64) {
+	FromContext(c).OffLine(userId)
 }
 
 func NewChatService() model.ChatService {

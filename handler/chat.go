@@ -31,24 +31,27 @@ func (c *Chat) WsConn(ctx *gin.Context) {
 	// 用户上线
 	service.OnLine(ctx.Request.Context(), userIdInt, conn)
 
-	defer conn.Close()
 
 	if err != nil {
 		_ = ctx.Error(err)
 		return
 	}
+
 	var input = new(Input)
+
 	for {
 		err := conn.ReadJSON(input)
 		if err != nil {
-			// todo 错误处理
-			fmt.Println(err)
-			continue
+			// 调用用户下线
+			service.OffLine(ctx.Request.Context(), userIdInt)
+			break
 		}
+
 		msg := model.Msg{
 			SendUserId: userIdInt,
 			Data:       []byte(input.Msg),
 		}
+
 		// websocket 发送消息
 		err = service.SendMsg(ctx.Request.Context(), input.ToUserId, &msg)
 		if err != nil {
@@ -67,6 +70,8 @@ func (c *Chat) WsConn(ctx *gin.Context) {
 			fmt.Println(err)
 		}
 	}
+
+	conn.Close()
 }
 
 func NewChat() Chat {
