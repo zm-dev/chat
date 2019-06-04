@@ -88,7 +88,7 @@
             password
         })
     }).then(() => {
-        const ws = new WebSocket("ws://localhost:8080/v1/api/ws_conn");
+        const ws = new WebSocket(`ws://${window.location.host}/v1/api/ws_conn`);
 
         ws.onopen = () => {
             // onopen
