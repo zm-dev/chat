@@ -1,7 +1,7 @@
 FROM golang:1.11.1-alpine3.7 as builder
-COPY . /go/src/github.com/zm-dev/chat_v2
-RUN go build -v -o /app/server /go/src/github.com/zm-dev/chat_v2/cmd/server/main.go
-RUN go build -v -o /app/cli /go/src/github.com/zm-dev/chat_v2/cmd/cli/main.go
+COPY . /go/src/github.com/zm-dev/chat
+RUN go build -v -o /app/server /go/src/github.com/zm-dev/chat/cmd/server/main.go
+RUN go build -v -o /app/cli /go/src/github.com/zm-dev/chat/cmd/cli/main.go
 
 FROM alpine:3.7
 RUN apk update && apk --no-cache add mailcap ca-certificates tzdata

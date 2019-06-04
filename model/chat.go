@@ -24,7 +24,7 @@ func (m *Msg) GetUserId() int64 {
 	if m == nil {
 		return -1
 	}
-	return m.GetUserId()
+	return m.SendUserId
 }
 
 func (m *Msg) GetData() []byte {
@@ -64,4 +64,6 @@ type ChatService interface {
 	SendMsg(userId int64, msg IMsg) error
 	// 用户上线
 	OnLine(userId int64, conn *websocket.Conn)
+	// 用户下线
+	OffLine(userId int64)
 }

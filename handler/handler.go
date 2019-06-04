@@ -61,6 +61,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	router := gin.Default()
 	router.Use(middleware.Service(s.Service))
 	router.Use(middleware.NewHandleErrorMiddleware(s.Conf.ServiceName))
+	router.StaticFile("/", "template/index.html")
 
 	api := router.Group("/v1/api")
 
