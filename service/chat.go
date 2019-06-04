@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/gorilla/websocket"
 	"github.com/zm-dev/chat/model"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -29,11 +30,43 @@ func (c *ChatService) SendMsg(userId int64, msg model.IMsg) error {
 }
 
 func (c *ChatService) OnLine(userId int64, conn *websocket.Conn) {
+
+	c.Broadcast(&model.Msg{
+		SendUserId: -1,
+		SendAt:     time.Now(),
+		Meta: map[string]string{
+			"msg_type": "user_online",
+			"user_id":  strconv.FormatInt(userId, 10),
+		},
+	}, []int64{userId})
+
 	c.userWsConnMap.Store(userId, conn)
 }
 
 func (c *ChatService) OffLine(userId int64) {
+
+	c.Broadcast(&model.Msg{
+		SendUserId: -1,
+		SendAt:     time.Now(),
+		Meta: map[string]string{
+			"msg_type": "user_offline",
+			"user_id":  strconv.FormatInt(userId, 10),
+		},
+	}, []int64{userId})
+
 	c.userWsConnMap.Delete(userId)
+}
+
+func (c *ChatService) Broadcast(msg model.IMsg, excludeUserId []int64) {
+	c.userWsConnMap.Range(func(key, value interface{}) bool {
+		for v := range excludeUserId {
+			if key == v {
+				return true
+			}
+		}
+		_ = value.(*websocket.Conn).WriteJSON(msg)
+		return true
+	})
 }
 
 func IsOnline(c context.Context, userId int64) bool {
@@ -50,6 +83,10 @@ func OnLine(c context.Context, userId int64, conn *websocket.Conn) {
 
 func OffLine(c context.Context, userId int64) {
 	FromContext(c).OffLine(userId)
+}
+
+func Broadcast(c context.Context, msg model.IMsg, excludeUserId []int64) {
+	FromContext(c).Broadcast(msg, excludeUserId)
 }
 
 func NewChatService() model.ChatService {

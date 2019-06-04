@@ -11,11 +11,14 @@ type IMsg interface {
 	GetData() []byte
 	GetSendAt() time.Time
 	SetSendAt(time.Time)
+	GetMeta() map[string]string
+	SetMeta(map[string]string)
 	MarshalJSON() ([]byte, error)
 }
 
 type Msg struct {
 	SendUserId int64
+	Meta       map[string]string
 	Data       []byte
 	SendAt     time.Time
 }
@@ -45,6 +48,14 @@ func (m *Msg) SetSendAt(t time.Time) {
 	m.SendAt = t
 }
 
+func (m *Msg) GetMeta() map[string]string {
+	return m.Meta
+}
+
+func (m *Msg) SetMeta(meta map[string]string) {
+	m.Meta = meta
+}
+
 func (m *Msg) MarshalJSON() ([]byte, error) {
 
 	return json.Marshal(struct {
@@ -66,4 +77,6 @@ type ChatService interface {
 	OnLine(userId int64, conn *websocket.Conn)
 	// 用户下线
 	OffLine(userId int64)
+	// 广播消息
+	Broadcast(msg IMsg, excludeUserId []int64)
 }
