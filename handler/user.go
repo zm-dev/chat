@@ -33,7 +33,6 @@ type UserUpdateRequest struct {
 	Profile    string `form:"profile" json:"profile"`         // 简介
 	Company    string `form:"company" json:"company"`         // 工作单位
 	Gender     uint8  `form:"gender" json:"gender"`           // 性别
-	GroupId    uint8  `form:"groupId" json:"groupId"`         // 组
 }
 
 func (u *userHandler) TeacherList(c *gin.Context) {
@@ -101,7 +100,6 @@ func (u *userHandler) UserUpdate(c *gin.Context) {
 		NikeName:   req.NikeName,
 		Profile:    req.Profile,
 		Gender:     enum.Gender(req.Gender),
-		GroupId:    enum.Group(req.GroupId),
 		Company:    req.Company,
 	})
 	if err != nil {

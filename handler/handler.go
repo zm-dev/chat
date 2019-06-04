@@ -34,6 +34,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	chatHandler := NewChat()
 	uploadImageHandler := NewUploadImage(s.ImageUploader, s.ImageUrl)
 	userHandler := NewUserHandler(s.ImageUrl)
+	recordHandler := NewRecordHandler()
 
 	if s.Debug {
 		gin.SetMode(gin.DebugMode)
@@ -63,10 +64,13 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 		authorized.POST("/upload_image", uploadImageHandler.UploadImage)
 
 		// 老师列表
-		authorized.GET("teacherList", userHandler.TeacherList)
+		authorized.GET("teacher_list", userHandler.TeacherList)
 
 		// 学生列表
-		authorized.GET("studentList", userHandler.StudentList)
+		authorized.GET("student_lst", userHandler.StudentList)
+
+		// 聊天记录
+		authorized.GET("/record", recordHandler.RecordList)
 	}
 
 	// logged uri: /v1/api/auth
@@ -74,6 +78,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	{
 		authRoute.GET("/me", meHandler.Show)
 		authRoute.GET("/logout", authHandler.Logout)
+		authRoute.PUT("/me", userHandler.UserUpdate)
 	}
 
 	// student uri: /v1/api/student
