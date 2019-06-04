@@ -16,6 +16,7 @@ func (r *dbRecord) LastRecordList(toId int64) (records []*model.Record, err erro
 		Joins("LEFT JOIN `records` r ON r.id = `last_records`.record_id").
 		Where("to_id", toId).
 		Find(&records).Error
+	return records, err
 }
 
 func (r *dbRecord) BatchSetRead(ids []int64, toId int64) error {
