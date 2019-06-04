@@ -67,10 +67,13 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 		authorized.GET("teacher_list", userHandler.TeacherList)
 
 		// 学生列表
-		authorized.GET("student_lst", userHandler.StudentList)
+		authorized.GET("student_list", userHandler.StudentList)
 
 		// 聊天记录
-		authorized.GET("/record", recordHandler.RecordList)
+		authorized.GET("/record", recordHandler.RecordListByUser)
+
+		// 消息列表
+		authorized.GET("/message_list", recordHandler.MessageList)
 	}
 
 	// logged uri: /v1/api/auth
