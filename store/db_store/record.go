@@ -9,8 +9,8 @@ type dbRecord struct {
 	db *gorm.DB
 }
 
-func (r *dbRecord) BatchSetRead(ids []int64) error {
-	return r.db.Model(&model.Record{}).Where("id IN (?)", ids).Update("is_read", 1).Error
+func (r *dbRecord) BatchSetRead(ids []int64, toId int64) error {
+	return r.db.Model(&model.Record{}).Where("id IN (?) AND to_id = ?", ids, toId).Update("is_read", 1).Error
 }
 
 func (r *dbRecord) PageRecord(page *model.Page, fromId, toId int64) (err error) {

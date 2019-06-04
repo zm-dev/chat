@@ -12,7 +12,7 @@ type Record struct {
 
 type RecordStore interface {
 	// 批量设置聊天记录为已读状态
-	BatchSetRead(ids []int64) error
+	BatchSetRead(ids []int64, toId int64) error
 	// 分页获取聊天记录列表，按照创建时间倒序排序
 	PageRecord(page *Page, teacherId, studentId int64) (err error)
 	// 创建一条聊天记录

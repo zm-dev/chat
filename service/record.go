@@ -9,8 +9,8 @@ type recordService struct {
 	rs model.RecordStore
 }
 
-func (rSvc *recordService) BatchSetRead(ids []int64) error {
-	return rSvc.rs.BatchSetRead(ids)
+func (rSvc *recordService) BatchSetRead(ids []int64, toId int64) error {
+	return rSvc.rs.BatchSetRead(ids, toId)
 }
 
 func (rSvc *recordService) PageRecord(page *model.Page, teacherId, studentId int64) (err error) {
@@ -21,8 +21,8 @@ func (rSvc *recordService) CreateRecord(record *model.Record) error {
 	return rSvc.rs.CreateRecord(record)
 }
 
-func BatchSetRead(ctx context.Context, ids []int64) error {
-	return FromContext(ctx).BatchSetRead(ids)
+func BatchSetRead(ctx context.Context, ids []int64, toId int64) error {
+	return FromContext(ctx).BatchSetRead(ids, toId)
 }
 
 func PageRecord(ctx context.Context, page *model.Page, teacherId, studentId int64) (err error) {
