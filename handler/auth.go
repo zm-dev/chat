@@ -20,10 +20,12 @@ type Req struct {
 
 func (authHandler) Login(c *gin.Context) {
 	req := &Req{}
+
 	if err := c.ShouldBind(req); err != nil {
 		_ = c.Error(errors.BindError(err))
 		return
 	}
+
 	ticket, err := service.UserLogin(c.Request.Context(), strings.TrimSpace(req.Account), strings.TrimSpace(req.Password))
 	if err != nil {
 		_ = c.Error(err)
