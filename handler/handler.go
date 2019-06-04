@@ -75,7 +75,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	{
 		authRoute.GET("/me", meHandler.Show)
 		authRoute.GET("/logout", authHandler.Logout)
-		authRoute.PUT("/batch_set_read", recordHandler.BatchSetRead)
+		authRoute.PUT("/record/batch_set_read", recordHandler.BatchSetRead)
 	}
 
 	// student uri: /v1/api/student
