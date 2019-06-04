@@ -16,6 +16,7 @@ func (r *dbRecord) LastRecordList(toId int64) (records []*model.Record, err erro
 		Joins("LEFT JOIN `records` r ON r.id = `last_records`.record_id").
 		Where("to_id", toId).
 		Find(&records).Error
+	//todo 未完成
 	return records, err
 }
 
@@ -43,31 +44,33 @@ func (r *dbRecord) CreateRecord(record *model.Record) (int64, error) {
 	record.CreatedAt = time.Now().UnixNano()
 
 	lastRecord := &model.LastRecord{}
-	whereLastRecord := model.LastRecord{
-		FromId: record.FromId,
-		ToId:   record.ToId,
-	}
-	r.db.Where(&whereLastRecord).First(&lastRecord)
+	userIdA := record.FromId
+	userIdB := record.ToId
+	r.db.Where("(user_id_a = ? AND user_id_b = ?) OR (user_id_a = ? AND user_id_b = ?)", userIdA, userIdB, userIdB, userIdA).First(&lastRecord)
 
 	tx := r.db.Begin()
 	if err := tx.Create(record).Error; err != nil {
 		tx.Rollback()
 		return 0, err
 	}
-	if lastRecord != nil {
-		// 最新的 recordId
-		lastRecord.RecordId = record.Id
-		if err := tx.Model(&model.LastRecord{}).Where(&whereLastRecord).Update("record_id", record.Id).Error; err != nil {
+	// 最新的 recordId
+	lastRecord.RecordId = record.Id
+	// 如果记录存在则更新
+	if lastRecord.UserIdA != 0 && lastRecord.UserIdB != 0 {
+		if err := tx.Model(&model.LastRecord{}).
+			Where("(user_id_a = ? AND user_id_b = ?) OR (user_id_a = ? AND user_id_b = ?)", userIdA, userIdB, userIdB, userIdA).
+			Update("record_id", record.Id).Error; err != nil {
 			tx.Rollback()
 			return 0, err
 		}
 	} else {
+		lastRecord.UserIdA = userIdA
+		lastRecord.UserIdB = userIdB
 		if err := tx.Create(lastRecord).Error; err != nil {
 			tx.Rollback()
 			return 0, err
 		}
 	}
-
 	tx.Commit()
 	return record.Id, nil
 }

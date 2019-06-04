@@ -11,8 +11,8 @@ type Record struct {
 }
 
 type LastRecord struct {
-	FromId   int64 `gorm:"type:BIGINT;NOT NUll;unique_index:from_id_to_id_ux" json:"from_id"`
-	ToId     int64 `gorm:"type:BIGINT;NOT NUll;unique_index:from_id_to_id_ux" json:"to_id"`
+	UserIdA  int64 `gorm:"type:BIGINT;NOT NUll;unique_index:user_id_a_user_id_b_ux" json:"user_id_a"`
+	UserIdB  int64 `gorm:"type:BIGINT;NOT NUll;unique_index:user_id_a_user_id_b_ux" json:"user_id_b"`
 	RecordId int64 `gorm:"type:BIGINT;NOT NUll" json:"record_id"`
 }
 
