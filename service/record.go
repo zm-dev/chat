@@ -9,6 +9,10 @@ type recordService struct {
 	rs model.RecordStore
 }
 
+func (rSvc *recordService) LastRecordList(toId int64) (records []*model.Record, err error) {
+	return rSvc.rs.LastRecordList(toId)
+}
+
 func (rSvc *recordService) BatchSetRead(ids []int64, toId int64) error {
 	return rSvc.rs.BatchSetRead(ids, toId)
 }

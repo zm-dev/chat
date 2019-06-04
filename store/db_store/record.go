@@ -41,20 +41,33 @@ func (r *dbRecord) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShow
 
 func (r *dbRecord) CreateRecord(record *model.Record) (int64, error) {
 	record.CreatedAt = time.Now().UnixNano()
+
+	lastRecord := &model.LastRecord{}
+	whereLastRecord := model.LastRecord{
+		FromId: record.FromId,
+		ToId:   record.ToId,
+	}
+	r.db.Where(&whereLastRecord).First(&lastRecord)
+
 	tx := r.db.Begin()
 	if err := tx.Create(record).Error; err != nil {
 		tx.Rollback()
 		return 0, err
 	}
-	lastRecord := &model.LastRecord{
-		FromId:   record.FromId,
-		ToId:     record.ToId,
-		RecordId: record.Id,
+	if lastRecord != nil {
+		// 最新的 recordId
+		lastRecord.RecordId = record.Id
+		if err := tx.Model(&model.LastRecord{}).Where(&whereLastRecord).Update("record_id", record.Id).Error; err != nil {
+			tx.Rollback()
+			return 0, err
+		}
+	} else {
+		if err := tx.Create(lastRecord).Error; err != nil {
+			tx.Rollback()
+			return 0, err
+		}
 	}
-	if err := tx.Create(lastRecord).Error; err != nil {
-		tx.Rollback()
-		return 0, err
-	}
+
 	tx.Commit()
 	return record.Id, nil
 }
