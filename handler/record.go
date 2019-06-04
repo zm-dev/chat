@@ -77,7 +77,7 @@ func (r *recordHandler) BatchSetRead(ctx *gin.Context) {
 // 与当前用户聊过天的用户列表以及最近的一条消息
 // 最近聊过天的用户列表（如果未读消息超过20条则全部显示，否则显示20条有未读消息和没有未读消息的用户列表）
 func (r *recordHandler) MessageList(c *gin.Context) {
-
+//
 }
 
 func NewRecordHandler() *recordHandler {

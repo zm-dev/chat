@@ -10,6 +10,12 @@ type Record struct {
 	UpdatedAt int64  `json:"updated_at"`
 }
 
+type LastRecord struct {
+	FromId   int64 `gorm:"type:BIGINT;NOT NUll;unique_index:from_id_to_id_ux" json:"from_id"`
+	ToId     int64 `gorm:"type:BIGINT;NOT NUll;unique_index:from_id_to_id_ux" json:"to_id"`
+	RecordId int64 `gorm:"type:BIGINT;NOT NUll" json:"record_id"`
+}
+
 type RecordStore interface {
 	// 批量设置聊天记录为已读状态
 	BatchSetRead(ids []int64, toId int64) error
@@ -17,6 +23,8 @@ type RecordStore interface {
 	PageRecord(page *Page, userIdA, userIdB int64, onlyShowNotRead bool) (err error)
 	// 创建一条聊天记录
 	CreateRecord(record *Record) error
+	// 最近的聊天记录
+	LastRecordList(toId int64) (records []*Record, err error)
 }
 
 type RecordService interface {

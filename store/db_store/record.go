@@ -10,6 +10,14 @@ type dbRecord struct {
 	db *gorm.DB
 }
 
+func (r *dbRecord) LastRecordList(toId int64) (records []*model.Record, err error) {
+	records = make([]*model.Record, 0, 20)
+	err = r.db.Table("last_records").
+		Joins("LEFT JOIN `records` r ON r.id = `last_records`.record_id").
+		Where("to_id", toId).
+		Find(&records).Error
+}
+
 func (r *dbRecord) BatchSetRead(ids []int64, toId int64) error {
 	return r.db.Model(&model.Record{}).Where("id IN (?) AND to_id = ?", ids, toId).Updates(map[string]interface{}{
 		"is_read":    1,
@@ -32,7 +40,22 @@ func (r *dbRecord) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShow
 
 func (r *dbRecord) CreateRecord(record *model.Record) error {
 	record.CreatedAt = time.Now().UnixNano()
-	return r.db.Create(record).Error
+	tx := r.db.Begin()
+	if err := tx.Create(record).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	lastRecord := &model.LastRecord{
+		FromId:   record.FromId,
+		ToId:     record.ToId,
+		RecordId: record.Id,
+	}
+	if err := tx.Create(lastRecord).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	tx.Commit()
+	return nil
 }
 
 func NewDBRecord(db *gorm.DB) model.RecordStore {
