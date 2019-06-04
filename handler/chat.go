@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/zm-dev/chat/errors"
 	"github.com/zm-dev/chat/handler/middleware"
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/service"
@@ -21,7 +21,7 @@ type Input struct {
 func (c *Chat) WsConn(ctx *gin.Context) {
 	userId, exists := ctx.Get(middleware.UserIdKey)
 	if !exists {
-		_ = ctx.Error(errors.New("user_id 不存在"))
+		_ = ctx.Error(errors.ErrAccountNotFound())
 		return
 	}
 	userIdInt := userId.(int64)
@@ -73,6 +73,6 @@ func (c *Chat) WsConn(ctx *gin.Context) {
 	conn.Close()
 }
 
-func NewChat() Chat {
+func NewChatHandler() Chat {
 	return Chat{}
 }
