@@ -16,7 +16,7 @@ type RecordStore interface {
 	// 分页获取聊天记录列表，按照创建时间倒序排序
 	PageRecord(page *Page, userIdA, userIdB int64, onlyShowNotRead bool) (err error)
 	// 创建一条聊天记录
-	CreateRecord(record *Record) error
+	CreateRecord(record *Record) (int64, error)
 }
 
 type RecordService interface {

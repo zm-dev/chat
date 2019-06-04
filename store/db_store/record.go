@@ -30,9 +30,10 @@ func (r *dbRecord) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShow
 	return
 }
 
-func (r *dbRecord) CreateRecord(record *model.Record) error {
+func (r *dbRecord) CreateRecord(record *model.Record) (int64, error) {
 	record.CreatedAt = time.Now().UnixNano()
-	return r.db.Create(record).Error
+	err := r.db.Create(record).Error
+	return record.Id, err
 }
 
 func NewDBRecord(db *gorm.DB) model.RecordStore {

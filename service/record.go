@@ -17,7 +17,7 @@ func (rSvc *recordService) PageRecord(page *model.Page, userIdA, userIdB int64, 
 	return rSvc.rs.PageRecord(page, userIdA, userIdB, onlyShowNotRead)
 }
 
-func (rSvc *recordService) CreateRecord(record *model.Record) error {
+func (rSvc *recordService) CreateRecord(record *model.Record) (int64, error) {
 	return rSvc.rs.CreateRecord(record)
 }
 
@@ -29,7 +29,7 @@ func PageRecord(ctx context.Context, page *model.Page, userIdA, userIdB int64, o
 	return FromContext(ctx).PageRecord(page, userIdA, userIdB, onlyShowNotRead)
 }
 
-func CreateRecord(ctx context.Context, record *model.Record) error {
+func CreateRecord(ctx context.Context, record *model.Record) (int64, error) {
 	return FromContext(ctx).CreateRecord(record)
 }
 
