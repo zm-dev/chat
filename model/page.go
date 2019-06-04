@@ -1,14 +1,14 @@
 package model
 
 type Page struct {
-	Size    int          `json:"size"`
-	Pages   int          `json:"pages"`
-	Total   int          `json:"total"`
-	Current int          `json:"current"`
-	Records *interface{} `json:"records"`
+	Size    int32       `json:"size"`
+	Pages   int32       `json:"pages"`
+	Total   int32       `json:"total"`
+	Current int32       `json:"current"`
+	Records interface{} `json:"records"`
 }
 
-func (p *Page) Offset() int {
+func (p *Page) Offset() int32 {
 	if p.Current > 0 {
 		return (p.Current - 1) * p.Size
 	}
@@ -23,12 +23,4 @@ func (p *Page) SetPages() {
 	if p.Total%p.Size != 0 {
 		p.Pages = p.Pages + 1
 	}
-}
-
-func (p *Page) setRecords(rs *interface{}) {
-	p.Records = rs
-}
-
-func (p *Page) setTotal(t int) {
-	p.Total = t
 }

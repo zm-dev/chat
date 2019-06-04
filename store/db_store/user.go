@@ -10,18 +10,26 @@ type dbUser struct {
 	db *gorm.DB
 }
 
-func (u *dbUser) UserList(uType enum.CertificateType) (users []*model.User, err error) {
-	users = make([]*model.User, 0, 4)
+func (u *dbUser) UserList(uType enum.CertificateType, page *model.Page) (err error) {
 	switch uType {
 	case enum.CertificateTeacher:
 		fallthrough
 	case enum.CertificateStudent:
 		fallthrough
 	case enum.CertificateAdmin:
-		err = u.db.Table("users").Joins("LEFT JOIN `certificates` c ON c.user_id = `users`.id").
-			Where("c.type = ?", uType).Find(&users).Error
+		queryBuilder := u.db.Table("users").Joins("LEFT JOIN `certificates` c ON c.user_id = `users`.id").
+			Where("c.type = ?", uType)
+		users := make([]*model.User, 0, 10)
+		if page.Size+page.Offset() > 0 {
+			queryBuilder.Count(&page.Total)
+			err = queryBuilder.Offset(page.Offset()).Limit(page.Size).Find(&users).Error
+		} else {
+			err = queryBuilder.Find(&users).Error
+		}
+		page.Records = users
+		page.SetPages()
 	default:
-		return nil, model.ErrUserTypeNotExist
+		return model.ErrUserTypeNotExist
 	}
 	return
 }

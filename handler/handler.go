@@ -8,42 +8,24 @@ import (
 	"strconv"
 )
 
-func getInt32LimitAndOffset(c *gin.Context) (limit, offset int32) {
+func getInt32PageAndSize(c *gin.Context) (page, size int32) {
 	var err error
-	limitI64, err := strconv.ParseInt(c.Query("limit"), 10, 32)
+	sizeI64, err := strconv.ParseInt(c.Query("size"), 10, 32)
 	if err != nil {
-		limit = 10
+		size = 10
 	} else {
-		limit = int32(limitI64)
+		size = int32(sizeI64)
 	}
-	if limit > 50 {
-		limit = 50
+	if size > 50 {
+		size = 50
 	}
-
-	offsetI64, err := strconv.ParseInt(c.Query("offset"), 10, 32)
+	pageI64, err := strconv.ParseInt(c.Query("page"), 10, 32)
 	if err != nil {
-		offset = 0
+		page = 0
 	} else {
-		offset = int32(offsetI64)
+		page = int32(pageI64)
 	}
-	return limit, offset
-}
-
-func getInt64LimitAndOffset(c *gin.Context) (limit, offset int64) {
-	var err error
-	limit, err = strconv.ParseInt(c.Query("limit"), 10, 32)
-	if err != nil {
-		limit = 10
-	}
-	if limit > 50 {
-		limit = 50
-	}
-
-	offset, err = strconv.ParseInt(c.Query("offset"), 10, 32)
-	if err != nil {
-		offset = 0
-	}
-	return limit, offset
+	return page, size
 }
 
 func CreateHTTPHandler(s *server.Server) http.Handler {
@@ -83,6 +65,8 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 		// 老师列表
 		authorized.GET("teacherList", userHandler.TeacherList)
 
+		// 学生列表
+		authorized.GET("studentList", userHandler.StudentList)
 	}
 
 	// logged uri: /v1/api/auth

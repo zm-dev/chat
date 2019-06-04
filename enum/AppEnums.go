@@ -23,9 +23,9 @@ const (
 
 // 群组枚举
 const (
-	TeacherGroup Group = iota // 老师
-	AlumnusGroup              // 校友
-	PBFGroup                  // 朋辈辅导员
+	TeacherGroup Group = iota + 1 // 老师(忽略零值)
+	AlumnusGroup                  // 校友
+	PBFGroup                      // 朋辈辅导员
 )
 
 func ParseGroup(g Group) (result string) {
@@ -51,7 +51,7 @@ func ParseGender(g Gender) (gender string) {
 	case GenderSecrecy:
 		fallthrough
 	default:
-		gender = "未知"
+		gender = "保密"
 	}
 	return
 }

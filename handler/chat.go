@@ -31,7 +31,6 @@ func (c *Chat) WsConn(ctx *gin.Context) {
 	// 用户上线
 	service.OnLine(ctx.Request.Context(), userIdInt, conn)
 
-
 	if err != nil {
 		_ = ctx.Error(err)
 		return

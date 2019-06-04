@@ -16,11 +16,8 @@ type User struct {
 	Company    string      `gorm:"type:varchar(50)" json:"company"`           // 工作单位
 	Password   string      `gorm:"type:varchar(64);NOT NULL" json:"password"` // 密码
 	PwPlain    string      `gorm:"type:varchar(20);not null" json:"-"`        // 密码明文
-	//IsAdmin    bool        `gorm:"type:TINYINT" json:"is_admin"`              // 管理员
-	//IsTeacher  bool        `gorm:"type:TINYINT" json:"is_teacher"`            // 教师
-	//IsStudent  bool        `gorm:"type:TINYINT" json:"is_student"`            // 学生
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt  time.Time   `json:"created_at"`
+	UpdatedAt  time.Time   `json:"updated_at"`
 }
 
 var ErrUserNotExist = errors.New("user is not exist")
@@ -31,7 +28,7 @@ type UserStore interface {
 	UserLoad(int64) (*User, error)
 	UserUpdate(*User) error
 	UserCreate(*User) error
-	UserList(uType enum.CertificateType) ([]*User, error)
+	UserList(uType enum.CertificateType, page *Page) error
 }
 
 type UserService interface {
@@ -40,5 +37,5 @@ type UserService interface {
 	UserRegister(account string, certificateType enum.CertificateType, password string) (userId int64, err error)
 	UserUpdatePassword(userId int64, newPassword string) (err error)
 	TeacherList() ([]*User, error)
-	StudentList() ([]*User, error)
+	StudentList(*Page) error
 }

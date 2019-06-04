@@ -16,11 +16,16 @@ type userService struct {
 }
 
 func (uSvc *userService) TeacherList() ([]*model.User, error) {
-	return uSvc.UserStore.UserList(enum.CertificateTeacher)
+	page := &model.Page{
+		Size:    -1,
+		Current: -1,
+	}
+	err := uSvc.UserStore.UserList(enum.CertificateTeacher, page)
+	return page.Records.([]*model.User), err
 }
 
-func (uSvc *userService) StudentList() ([]*model.User, error) {
-	return uSvc.UserStore.UserList(enum.CertificateStudent)
+func (uSvc *userService) StudentList(page *model.Page) error {
+	return uSvc.UserStore.UserList(enum.CertificateStudent, page)
 }
 
 func (uSvc *userService) UserLogin(account, password string) (ticket *model.Ticket, err error) {
@@ -108,8 +113,8 @@ func TeacherList(ctx context.Context) ([]*model.User, error) {
 	return FromContext(ctx).TeacherList()
 }
 
-func StudentList(ctx context.Context) ([]*model.User, error) {
-	return FromContext(ctx).StudentList()
+func StudentList(ctx context.Context, page *model.Page) error {
+	return FromContext(ctx).StudentList(page)
 }
 
 func NewUserService(us model.UserStore, cs model.CertificateStore, tSvc model.TicketService, h hasher.Hasher) model.UserService {

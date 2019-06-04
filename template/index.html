@@ -65,7 +65,7 @@
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-    const [account, password] = window.prompt("请输入账号名密码 逗号隔开（账号，密码）","账号,密码").split(',').map(item => item.trim());
+    const [account, password] = window.prompt("请输入账号名密码 逗号隔开（账号，密码）", "账号,密码").split(',').map(item => item.trim());
 
     const http = axios.create({
         baseURL: "/v1/api",
