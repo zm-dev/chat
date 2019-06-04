@@ -57,11 +57,7 @@
 </head>
 <body>
 <div class="wrapper">
-    <div class="messageList">
-        <p>asd</p>
-        <p>asd</p>
-        <p>asd</p>
-    </div>
+    <div class="messageList"></div>
     <div class="input">
         <div class="toUser">
             <input id="toUserId" type="number" placeholder="目标用户id">
@@ -77,7 +73,7 @@
 
 <script>
     const [account, password] = window.prompt("请输入账号名密码 逗号隔开（账号，密码）", "账号,密码").split(',').map(item => item.trim());
-
+    const messageListDom = document.querySelector('.messageList');
     const toUserIdDom = document.querySelector('#toUserId');
     const msgDom = document.querySelector('#msg');
 
@@ -100,7 +96,9 @@
         };
 
         ws.onmessage = evt => {
-            console.log(evt);
+            const pDom = document.createElement('p');
+            pDom.innerText = evt.data;
+            messageListDom.appendChild(pDom);
         };
 
         ws.onclose = () => {
