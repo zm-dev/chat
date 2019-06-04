@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/zm-dev/chat/enum"
 	"github.com/zm-dev/chat/errors"
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/service"
@@ -30,8 +31,13 @@ func AdminMiddleware(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	u := LoggedUser(c)
-	if !u.IsAdmin {
+	uId := UserId(c)
+	certificate, err := service.CertificateLoadByUserId(c.Request.Context(), uId)
+	if err != nil {
+		c.Abort()
+		return
+	}
+	if certificate.Type != enum.CertificateAdmin {
 		_ = c.Error(errors.Forbidden("没有权限"))
 		c.Abort()
 		return
@@ -46,8 +52,13 @@ func TeacherMiddleware(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	u := LoggedUser(c)
-	if !u.IsTeacher {
+	uId := UserId(c)
+	certificate, err := service.CertificateLoadByUserId(c.Request.Context(), uId)
+	if err != nil {
+		c.Abort()
+		return
+	}
+	if certificate.Type != enum.CertificateTeacher {
 		_ = c.Error(errors.Forbidden("没有权限"))
 		c.Abort()
 		return
@@ -62,8 +73,13 @@ func StudentMiddleware(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	u := LoggedUser(c)
-	if !u.IsStudent {
+	uId := UserId(c)
+	certificate, err := service.CertificateLoadByUserId(c.Request.Context(), uId)
+	if err != nil {
+		c.Abort()
+		return
+	}
+	if certificate.Type != enum.CertificateStudent {
 		_ = c.Error(errors.Forbidden("没有权限"))
 		c.Abort()
 		return

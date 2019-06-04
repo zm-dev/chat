@@ -37,12 +37,11 @@ func convert2UserResp(c context.Context, user *model.User, imageUrl image_url.UR
 	return map[string]interface{}{
 		"id":         user.Id,
 		"name":       user.NikeName,
-		"email":      user.Email,
 		"avatarUrl":  imageUrl.Generate(user.AvatarHash),
 		"profile":    user.Profile,
 		"gender":     enum.ParseGender(user.Gender),
 		"group":      enum.ParseGroup(user.GroupId),
-		"status":     service.IsOnline(c, user.Id),
+		"is_online":  service.IsOnline(c, user.Id),
 		"created_at": user.CreatedAt,
 		"updated_at": user.UpdatedAt,
 	}

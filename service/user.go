@@ -16,11 +16,11 @@ type userService struct {
 }
 
 func (uSvc *userService) TeacherList() ([]*model.User, error) {
-	return uSvc.UserStore.UserList(enum.TeacherType)
+	return uSvc.UserStore.UserList(enum.CertificateTeacher)
 }
 
 func (uSvc *userService) StudentList() ([]*model.User, error) {
-	return uSvc.UserStore.UserList(enum.StudentType)
+	return uSvc.UserStore.UserList(enum.CertificateStudent)
 }
 
 func (uSvc *userService) UserLogin(account, password string) (ticket *model.Ticket, err error) {
@@ -43,7 +43,7 @@ func (uSvc *userService) UserLogin(account, password string) (ticket *model.Tick
 	return nil, errors.ErrPassword()
 }
 
-func (uSvc *userService) UserRegister(account string, certificateType model.CertificateType, password string) (userId int64, err error) {
+func (uSvc *userService) UserRegister(account string, certificateType enum.CertificateType, password string) (userId int64, err error) {
 	if exist, err := uSvc.cs.CertificateExist(account); err != nil {
 		return 0, err
 	} else if exist {
@@ -53,8 +53,6 @@ func (uSvc *userService) UserRegister(account string, certificateType model.Cert
 		Password: uSvc.h.Make(password),
 		PwPlain:  password,
 		Gender:   enum.GenderSecrecy,
-		// 学生注册
-		IsStudent: true,
 	}
 	if err := uSvc.UserStore.UserCreate(user); err != nil {
 		return 0, err
@@ -68,9 +66,26 @@ func (uSvc *userService) UserRegister(account string, certificateType model.Cert
 
 func (uSvc *userService) UserUpdatePassword(userId int64, newPassword string) error {
 	return uSvc.UserStore.UserUpdate(&model.User{
+		Id:       userId,
 		Password: uSvc.h.Make(newPassword),
 		PwPlain:  newPassword,
 	})
+}
+
+func (uSvc *userService) UserUpdate(user *model.User) error {
+	return uSvc.UserStore.UserUpdate(&model.User{
+		Id:         user.Id,
+		AvatarHash: user.AvatarHash,
+		NikeName:   user.NikeName,
+		Profile:    user.Profile,
+		Gender:     user.Gender,
+		GroupId:    user.GroupId,
+		Company:    user.Company,
+	})
+}
+
+func UserUpdate(ctx context.Context, user *model.User) error {
+	return FromContext(ctx).UserUpdate(user)
 }
 
 func UserLoad(ctx context.Context, id int64) (*model.User, error) {
@@ -81,7 +96,7 @@ func UserLogin(ctx context.Context, account, password string) (*model.Ticket, er
 	return FromContext(ctx).UserLogin(account, password)
 }
 
-func UserRegister(ctx context.Context, account string, certificateType model.CertificateType, password string) (userId int64, err error) {
+func UserRegister(ctx context.Context, account string, certificateType enum.CertificateType, password string) (userId int64, err error) {
 	return FromContext(ctx).UserRegister(account, certificateType, password)
 }
 
@@ -93,7 +108,7 @@ func TeacherList(ctx context.Context) ([]*model.User, error) {
 	return FromContext(ctx).TeacherList()
 }
 
-func w(ctx context.Context) ([]*model.User, error) {
+func StudentList(ctx context.Context) ([]*model.User, error) {
 	return FromContext(ctx).StudentList()
 }
 

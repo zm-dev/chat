@@ -78,6 +78,10 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 		authorized.GET("/ws_conn", chatHandler.WsConn)
 		// 上传图片
 		authorized.POST("/upload_image", uploadImageHandler.UploadImage)
+
+		// 老师列表
+		authorized.GET("teacherList", userHandler.TeacherList)
+
 	}
 
 	// logged uri: /v1/api/auth
@@ -85,8 +89,6 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	{
 		authRoute.GET("/me", meHandler.Show)
 		authRoute.GET("/logout", authHandler.Logout)
-		// 老师列表
-		authRoute.GET("/teacherList", userHandler.TeacherList)
 	}
 
 	// student uri: /v1/api/student
@@ -105,6 +107,8 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	admin := authorized.Group("/admin")
 	admin.Use(middleware.AdminMiddleware)
 	{
+		admin.POST("/teacher", userHandler.CreateTeacher)
 	}
+
 	return router
 }

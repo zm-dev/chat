@@ -6,11 +6,12 @@ type Gender uint8
 
 type Group uint8
 
-// 用户类型枚举
+type CertificateType uint8
+
 const (
-	TeacherType UserType = iota // 老师
-	StudentType                 // 学生
-	AdminType                   // 管理员
+	CertificateAdmin   CertificateType = iota // 管理员
+	CertificateStudent                        // 学生
+	CertificateTeacher                        // 老师
 )
 
 // 性别枚举
@@ -23,8 +24,8 @@ const (
 // 群组枚举
 const (
 	TeacherGroup Group = iota // 老师
-	AlumnusGroup                 // 校友
-	PBFGroup                     // 朋辈辅导员
+	AlumnusGroup              // 校友
+	PBFGroup                  // 朋辈辅导员
 )
 
 func ParseGroup(g Group) (result string) {

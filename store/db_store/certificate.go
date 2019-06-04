@@ -2,11 +2,24 @@ package db_store
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/zm-dev/chat/enum"
 	"github.com/zm-dev/chat/model"
 )
 
 type dbCertificate struct {
 	db *gorm.DB
+}
+
+func (c *dbCertificate) CertificateLoadByUserId(userId int64) (certificate *model.Certificate, err error) {
+	if userId == 0 {
+		return nil, model.ErrCertificateNotExist
+	}
+	certificate = &model.Certificate{}
+	err = c.db.Where(model.Certificate{UserId: userId}).First(&certificate).Error
+	if gorm.IsRecordNotFoundError(err) {
+		err = model.ErrCertificateNotExist
+	}
+	return
 }
 
 func (c *dbCertificate) CertificateExist(account string) (bool, error) {
@@ -38,7 +51,7 @@ func (c *dbCertificate) CertificateCreate(certificate *model.Certificate) error 
 	return c.db.Create(certificate).Error
 }
 
-func (c *dbCertificate) CertificateUpdate(oldAccount, newAccount string, certificateType model.CertificateType) error {
+func (c *dbCertificate) CertificateUpdate(oldAccount, newAccount string, certificateType enum.CertificateType) error {
 	return c.db.Model(&model.User{}).
 		Where("account", oldAccount).
 		Where("type", certificateType).

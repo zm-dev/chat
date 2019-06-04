@@ -10,15 +10,16 @@ type dbUser struct {
 	db *gorm.DB
 }
 
-func (u *dbUser) UserList(uType enum.UserType) (users []*model.User, err error) {
+func (u *dbUser) UserList(uType enum.CertificateType) (users []*model.User, err error) {
 	users = make([]*model.User, 0, 4)
 	switch uType {
-	case enum.TeacherType:
-		err = u.db.Model(&model.User{}).Find(&users, map[string]interface{}{"is_teacher": 1}).Error
-	case enum.StudentType:
-		err = u.db.Model(&model.User{}).Find(&users, map[string]interface{}{"is_student": 1}).Error
-	case enum.AdminType:
-		err = u.db.Model(&model.User{}).Find(&users, map[string]interface{}{"is_admin": 1}).Error
+	case enum.CertificateTeacher:
+		fallthrough
+	case enum.CertificateStudent:
+		fallthrough
+	case enum.CertificateAdmin:
+		err = u.db.Table("users").Joins("LEFT JOIN `certificates` c ON c.user_id = `users`.id").
+			Where("c.type = ?", uType).Find(&users).Error
 	default:
 		return nil, model.ErrUserTypeNotExist
 	}
@@ -50,7 +51,7 @@ func (u *dbUser) UserUpdate(user *model.User) error {
 	if user.Id <= 0 {
 		return model.ErrUserNotExist
 	}
-	return u.db.Omit("created_at").Save(user).Error
+	return u.db.Model(&model.User{}).Omit("created_at").Updates(user).Error
 }
 
 func (u *dbUser) UserCreate(user *model.User) error {

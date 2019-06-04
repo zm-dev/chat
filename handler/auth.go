@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/zm-dev/chat/enum"
 	"github.com/zm-dev/chat/errors"
-	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/service"
 	"net/http"
 	"strconv"
@@ -30,7 +30,26 @@ func (authHandler) Login(c *gin.Context) {
 		return
 	}
 	setAuthCookie(c, ticket.Id, ticket.UserId, int(ticket.ExpiredAt.Sub(time.Now()).Seconds()))
-	c.JSON(http.StatusNoContent, nil)
+	u, err := service.UserLoad(c.Request.Context(), ticket.UserId)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+	certificate, err := service.CertificateLoadByUserId(c.Request.Context(), ticket.UserId)
+	if err != nil {
+		c.Abort()
+		return
+	}
+	userType := enum.CertificateStudent
+	if certificate.Type == enum.CertificateTeacher {
+		userType = enum.CertificateTeacher
+	} else if certificate.Type == enum.CertificateAdmin {
+		userType = enum.CertificateAdmin
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"userType": userType,
+		"userId":   u.Id,
+	})
 }
 
 func (authHandler) Logout(c *gin.Context) {
@@ -50,7 +69,7 @@ func (authHandler) Register(c *gin.Context) {
 		_ = c.Error(err)
 		return
 	}
-	_, err := service.UserRegister(c.Request.Context(), strings.TrimSpace(req.Account), model.CertificateType(0), req.Password)
+	_, err := service.UserRegister(c.Request.Context(), strings.TrimSpace(req.Account), enum.CertificateStudent, req.Password)
 	if err != nil {
 		_ = c.Error(err)
 		return
