@@ -35,6 +35,34 @@ func (r *recordHandler) RecordList(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+type BatchSetReadRequest struct {
+	RecordIds []int64 `form:"record_ids" json:"record_ids"` // 账号
+}
+
+func (c *recordHandler) BatchSetRead(ctx *gin.Context) {
+	userId, exists := ctx.Get(middleware.UserIdKey)
+	if !exists {
+		_ = ctx.Error(errors.ErrAccountNotFound())
+		return
+	}
+	userIdInt := userId.(int64)
+
+	req := &BatchSetReadRequest{}
+
+	if err := ctx.ShouldBind(&req); err != nil {
+		_ = ctx.Error(errors.BindError(err))
+		return
+	}
+
+	err := service.BatchSetRead(ctx.Request.Context(), req.RecordIds, userIdInt);
+	if err != nil {
+		_ = ctx.Error(err)
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
+}
+
 func NewRecordHandler() *recordHandler {
 	return &recordHandler{}
 }

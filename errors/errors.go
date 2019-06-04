@@ -56,3 +56,4 @@ func ErrAccountNotFound() error {
 func ErrEnumNotfound() error {
 	return gerrors.BadRequest(10010, "枚举不存在", nil)
 }
+

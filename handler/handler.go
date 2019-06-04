@@ -31,7 +31,7 @@ func getInt32PageAndSize(c *gin.Context) (page, size int32) {
 func CreateHTTPHandler(s *server.Server) http.Handler {
 	authHandler := NewAuthHandler()
 	meHandler := NewMeHandler(s.ImageUrl)
-	chatHandler := NewChat()
+	chatHandler := NewChatHandler()
 	uploadImageHandler := NewUploadImage(s.ImageUploader, s.ImageUrl)
 	userHandler := NewUserHandler(s.ImageUrl)
 	recordHandler := NewRecordHandler()
@@ -79,6 +79,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 		authRoute.GET("/me", meHandler.Show)
 		authRoute.GET("/logout", authHandler.Logout)
 		authRoute.PUT("/me", userHandler.UserUpdate)
+		authRoute.PUT("/record/batch_set_read", recordHandler.BatchSetRead)
 	}
 
 	// student uri: /v1/api/student
