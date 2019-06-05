@@ -9,8 +9,12 @@ type recordService struct {
 	rs model.RecordStore
 }
 
-func (rSvc *recordService) LastRecordList(toId int64) (records []*model.Record, err error) {
-	return rSvc.rs.LastRecordList(toId)
+func (rSvc *recordService) GetNotReadRecordCount(fromId, toId int64) int32 {
+	return rSvc.rs.GetNotReadRecordCount(fromId, toId)
+}
+
+func (rSvc *recordService) LastRecordList(userIdA int64, size int) (records []*model.Record, err error) {
+	return rSvc.rs.LastRecordList(userIdA, size)
 }
 
 func (rSvc *recordService) BatchSetRead(ids []int64, toId int64) error {
@@ -35,6 +39,14 @@ func PageRecord(ctx context.Context, page *model.Page, userIdA, userIdB int64, o
 
 func CreateRecord(ctx context.Context, record *model.Record) (int64, error) {
 	return FromContext(ctx).CreateRecord(record)
+}
+
+func LastRecordList(ctx context.Context, userIdA int64, size int) (records []*model.Record, err error) {
+	return FromContext(ctx).LastRecordList(userIdA, size)
+}
+
+func GetNotReadRecordCount(ctx context.Context, fromId, toId int64) int32 {
+	return FromContext(ctx).GetNotReadRecordCount(fromId, toId)
 }
 
 func NewRecordService(rs model.RecordStore) model.RecordService {

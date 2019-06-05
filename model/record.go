@@ -1,13 +1,15 @@
 package model
 
+import "time"
+
 type Record struct {
-	Id        int64  `gorm:"type:BIGINT AUTO_INCREMENT;PRIMARY_KEY;NOT NUll" json:"id"`
-	FromId    int64  `gorm:"type:BIGINT;NOT NUll" json:"from_id"`
-	ToId      int64  `gorm:"type:BIGINT;NOT NUll" json:"to_id"`
-	Msg       string `gorm:"type:varchar(512);NOT NULL" json:"msg"` // 正文
-	IsRead    bool   `gorm:"type:TINYINT" json:"is_read"`           // 是否已经阅读
-	CreatedAt int64  `json:"created_at"`
-	UpdatedAt int64  `json:"updated_at"`
+	Id        int64     `gorm:"type:BIGINT AUTO_INCREMENT;PRIMARY_KEY;NOT NUll" json:"id"`
+	FromId    int64     `gorm:"type:BIGINT;NOT NUll" json:"from_id"`
+	ToId      int64     `gorm:"type:BIGINT;NOT NUll" json:"to_id"`
+	Msg       string    `gorm:"type:varchar(512);NOT NULL" json:"msg"` // 正文
+	IsRead    bool      `gorm:"type:TINYINT" json:"is_read"`           // 是否已经阅读
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type LastRecord struct {
@@ -16,6 +18,12 @@ type LastRecord struct {
 	RecordId int64 `gorm:"type:BIGINT;NOT NUll" json:"record_id"`
 }
 
+type recordList []*Record
+
+func (p recordList) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p recordList) Len() int           { return len(p) }
+func (p recordList) Less(i, j int) bool { return p[i].IsRead == true }
+
 type RecordStore interface {
 	// 批量设置聊天记录为已读状态
 	BatchSetRead(ids []int64, toId int64) error
@@ -23,8 +31,10 @@ type RecordStore interface {
 	PageRecord(page *Page, userIdA, userIdB int64, onlyShowNotRead bool) (err error)
 	// 创建一条聊天记录
 	CreateRecord(record *Record) (int64, error)
-	// 最近的聊天记录
-	LastRecordList(toId int64) (records []*Record, err error)
+	// 最近的聊天记录(userId 必须传自己的ID，获取和自己有关的消息)
+	LastRecordList(userIdA int64, size int) (records []*Record, err error)
+	// 未读的消息数量
+	GetNotReadRecordCount(fromId, toId int64) int32
 }
 
 type RecordService interface {

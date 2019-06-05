@@ -10,20 +10,37 @@ type dbRecord struct {
 	db *gorm.DB
 }
 
-func (r *dbRecord) LastRecordList(toId int64) (records []*model.Record, err error) {
-	records = make([]*model.Record, 0, 20)
-	err = r.db.Table("last_records").
+func (r *dbRecord) GetNotReadRecordCount(fromId, toId int64) (count int32) {
+	count = 0
+	r.db.Model(&model.Record{}).Where("to_id = ? AND from_id = ? AND is_read = false", toId, fromId).Count(&count);
+	return
+}
+
+func (r *dbRecord) LastRecordList(userIdA int64, size int) (records []*model.Record, err error) {
+	records = make([]*model.Record, 0, size)
+	queryBuilder := r.db.Table("last_records").Select("r.*").
 		Joins("LEFT JOIN `records` r ON r.id = `last_records`.record_id").
-		Where("to_id", toId).
-		Find(&records).Error
-	//todo 未完成
+		Where("last_records.user_id_a = ? OR last_records.user_id_b = ?", userIdA, userIdA).
+		Order("r.created_at desc")
+
+	err = queryBuilder.Where("r.is_read = ?", 0).Find(&records).Error
+	if len(records) < size {
+		needSize := size - len(records)
+		readRecords := make([]*model.Record, 0, needSize)
+		err = queryBuilder.Where("r.is_read = ?", 1).Find(&readRecords).Error
+		if len(readRecords) > 0 {
+			for _, item := range readRecords {
+				records = append(records, item)
+			}
+		}
+	}
 	return records, err
 }
 
 func (r *dbRecord) BatchSetRead(ids []int64, toId int64) error {
 	return r.db.Model(&model.Record{}).Where("id IN (?) AND to_id = ?", ids, toId).Updates(map[string]interface{}{
 		"is_read":    1,
-		"updated_at": time.Now().UnixNano(),
+		"updated_at": time.Now(),
 	}).Error
 }
 
@@ -41,7 +58,7 @@ func (r *dbRecord) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShow
 }
 
 func (r *dbRecord) CreateRecord(record *model.Record) (int64, error) {
-	record.CreatedAt = time.Now().UnixNano()
+	record.CreatedAt = time.Now()
 
 	lastRecord := &model.LastRecord{}
 	userIdA := record.FromId

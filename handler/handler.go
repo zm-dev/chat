@@ -34,7 +34,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	chatHandler := NewChatHandler()
 	uploadImageHandler := NewUploadImage(s.ImageUploader, s.ImageUrl)
 	userHandler := NewUserHandler(s.ImageUrl)
-	recordHandler := NewRecordHandler()
+	recordHandler := NewRecordHandler(s.ImageUrl)
 
 	if s.Debug {
 		gin.SetMode(gin.DebugMode)
