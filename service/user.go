@@ -81,7 +81,7 @@ func (uSvc *userService) UserUpdate(user *model.User) error {
 	return uSvc.UserStore.UserUpdate(&model.User{
 		Id:         user.Id,
 		AvatarHash: user.AvatarHash,
-		NikeName:   user.NikeName,
+		NickName:   user.NickName,
 		Profile:    user.Profile,
 		Gender:     user.Gender,
 		GroupId:    user.GroupId,

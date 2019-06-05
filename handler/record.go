@@ -28,7 +28,7 @@ type BatchSetReadRequest struct {
 type MessageRecordListResponse struct {
 	UserId              int64     `json:"user_id"`
 	AvatarUrl           string    `json:"avatar_url"`
-	NikeName            string    `json:"nike_name"`
+	NickName            string    `json:"nick_name"`
 	LastMessage         string    `json:"last_message"`
 	IsMeSend            bool      `json:"is_me_send"`
 	NotReadMsgCount     int32     `json:"not_read_msg_count"`
@@ -100,7 +100,7 @@ func (r *recordHandler) MessageList(c *gin.Context) {
 			return
 		}
 		itemMsg.UserId = user.Id
-		itemMsg.NikeName = user.NikeName
+		itemMsg.NickName = user.NickName
 		itemMsg.AvatarUrl = r.imageUrl.Generate(user.AvatarHash)
 
 		// 消息

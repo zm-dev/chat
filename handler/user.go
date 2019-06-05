@@ -19,7 +19,7 @@ type UserCreateRequest struct {
 	Account    string `form:"account" json:"account"`         // 账号
 	Password   string `form:"password" json:"password"`       // 密码
 	AvatarHash string `form:"avatar_hash" json:"avatar_hash"` // 头像
-	NikeName   string `form:"nike_name" json:"nike_name"`     // 昵称
+	NickName   string `form:"nick_name" json:"nick_name"`     // 昵称
 	Profile    string `form:"profile" json:"profile"`         // 简介
 	Company    string `form:"company" json:"company"`         // 工作单位
 	Gender     uint8  `form:"gender" json:"gender"`           // 性别
@@ -29,7 +29,7 @@ type UserCreateRequest struct {
 type UserUpdateRequest struct {
 	Account    string `form:"account" json:"account"`         // 账号
 	AvatarHash string `form:"avatar_hash" json:"avatar_hash"` // 头像
-	NikeName   string `form:"nike_name" json:"nike_name"`     // 昵称
+	NickName   string `form:"nick_name" json:"nick_name"`     // 昵称
 	Profile    string `form:"profile" json:"profile"`         // 简介
 	Company    string `form:"company" json:"company"`         // 工作单位
 	Gender     uint8  `form:"gender" json:"gender"`           // 性别
@@ -75,7 +75,7 @@ func (u *userHandler) CreateTeacher(c *gin.Context) {
 	err = service.UserUpdate(c.Request.Context(), &model.User{
 		Id:         userId,
 		AvatarHash: req.AvatarHash,
-		NikeName:   req.NikeName,
+		NickName:   req.NickName,
 		Profile:    req.Profile,
 		Gender:     enum.Gender(req.Gender),
 		GroupId:    enum.Group(req.GroupId),
@@ -97,7 +97,7 @@ func (u *userHandler) UserUpdate(c *gin.Context) {
 	err := service.UserUpdate(c.Request.Context(), &model.User{
 		Id:         userId,
 		AvatarHash: req.AvatarHash,
-		NikeName:   req.NikeName,
+		NickName:   req.NickName,
 		Profile:    req.Profile,
 		Gender:     enum.Gender(req.Gender),
 		Company:    req.Company,

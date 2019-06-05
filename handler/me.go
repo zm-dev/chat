@@ -36,7 +36,7 @@ func convert2UserListResp(c context.Context, users []*model.User, imageUrl image
 func convert2UserResp(c context.Context, user *model.User, imageUrl image_url.URL) map[string]interface{} {
 	return map[string]interface{}{
 		"id":         user.Id,
-		"name":       user.NikeName,
+		"name":       user.NickName,
 		"avatarUrl":  imageUrl.Generate(user.AvatarHash),
 		"profile":    user.Profile,
 		"gender":     enum.ParseGender(user.Gender),
