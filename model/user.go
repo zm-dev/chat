@@ -9,7 +9,7 @@ import (
 type User struct {
 	Id         int64       `gorm:"type:BIGINT AUTO_INCREMENT;PRIMARY_KEY;NOT NUll" json:"id"`
 	AvatarHash string      `gorm:"type:char(32)" json:"avatar_hash"`          // 头像
-	NikeName   string      `gorm:"type:varchar(50)" json:"nike_name"`         // 昵称
+	NickName   string      `gorm:"type:varchar(50)" json:"nick_name"`         // 昵称
 	Profile    string      `gorm:"type:varchar(255)" json:"profile"`          // 简介
 	Gender     enum.Gender `gorm:"type:TINYINT;DEFAULT:0" json:"gender"`      // 性别
 	GroupId    enum.Group  `gorm:"type:TINYINT;DEFAULT:0" json:"group"`       // 组
