@@ -77,6 +77,8 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 
 		// 批量设置消息为已读状态
 		authorized.PUT("/record/batch_set_read", recordHandler.BatchSetRead)
+		// 显示指定用户信息
+		authorized.GET("/user/:uid", userHandler.Show)
 	}
 
 	// logged uri: /v1/api/auth

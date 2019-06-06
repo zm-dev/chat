@@ -9,6 +9,7 @@ import (
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/service"
 	"net/http"
+	"strconv"
 )
 
 type userHandler struct {
@@ -40,6 +41,7 @@ func (u *userHandler) TeacherList(c *gin.Context) {
 	users, err := service.TeacherList(c.Request.Context())
 	if err != nil {
 		_ = c.Error(err)
+		return
 	}
 	c.JSON(http.StatusOK, convert2UserListResp(c.Request.Context(), users, u.imageUrl))
 }
@@ -53,9 +55,20 @@ func (u *userHandler) StudentList(c *gin.Context) {
 	err := service.StudentList(c.Request.Context(), page)
 	if err != nil {
 		_ = c.Error(err)
+		return
 	}
 	page.Records = convert2UserListResp(c.Request.Context(), page.Records.([]*model.User), u.imageUrl)
 	c.JSON(http.StatusOK, page)
+}
+
+func (u *userHandler) Show(c *gin.Context) {
+	userId, err := strconv.ParseInt(c.Param("uid"), 10, 32)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+	user, err := service.UserLoad(c.Request.Context(), userId)
+	c.JSON(http.StatusOK, convert2UserResp(c.Request.Context(), user, u.imageUrl))
 }
 
 func (u *userHandler) CreateTeacher(c *gin.Context) {
@@ -71,6 +84,7 @@ func (u *userHandler) CreateTeacher(c *gin.Context) {
 	userId, err := service.UserRegister(c.Request.Context(), req.Account, enum.CertificateTeacher, req.Password)
 	if err != nil {
 		_ = c.Error(err)
+		return
 	}
 	err = service.UserUpdate(c.Request.Context(), &model.User{
 		Id:         userId,
@@ -83,6 +97,7 @@ func (u *userHandler) CreateTeacher(c *gin.Context) {
 	})
 	if err != nil {
 		_ = c.Error(err)
+		return
 	}
 	c.JSON(http.StatusNoContent, nil)
 }
@@ -104,6 +119,7 @@ func (u *userHandler) UserUpdate(c *gin.Context) {
 	})
 	if err != nil {
 		_ = c.Error(err)
+		return
 	}
 	c.JSON(http.StatusNoContent, nil)
 }
