@@ -13,14 +13,19 @@ import (
 
 type authHandler struct{}
 
-type Req struct {
+type RegisterReq struct {
 	Nickname string `form:"nickname" json:"nickname"`
 	Account  string `form:"account" json:"account"`
 	Password string `form:"password" json:"password"`
 }
 
+type LoginReq struct {
+	Account  string `form:"account" json:"account"`
+	Password string `form:"password" json:"password"`
+}
+
 func (authHandler) Login(c *gin.Context) {
-	req := &Req{}
+	req := &LoginReq{}
 
 	if err := c.ShouldBind(req); err != nil {
 		_ = c.Error(errors.BindError(err))
@@ -67,7 +72,7 @@ func (authHandler) Logout(c *gin.Context) {
 }
 
 func (authHandler) Register(c *gin.Context) {
-	req := &Req{}
+	req := &RegisterReq{}
 	if err := c.ShouldBind(req); err != nil {
 		_ = c.Error(err)
 		return
