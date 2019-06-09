@@ -72,13 +72,20 @@ func (authHandler) Register(c *gin.Context) {
 		_ = c.Error(err)
 		return
 	}
-	//account, password, nickname string, certificateType enum.CertificateType
-	_, err := service.UserRegister(c.Request.Context(), strings.TrimSpace(req.Account), req.Password, req.Nickname, enum.CertificateStudent)
+	_, err := service.UserRegister(c.Request.Context(), strings.TrimSpace(req.Account), strings.TrimSpace(req.Password), req.Nickname, enum.CertificateStudent)
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
-	c.Status(201)
+
+	// 登陆
+	ticket, err := service.UserLogin(c.Request.Context(), strings.TrimSpace(req.Account), strings.TrimSpace(req.Password))
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+	setAuthCookie(c, ticket.Id, ticket.UserId, int(ticket.ExpiredAt.Sub(time.Now()).Seconds()))
+	c.Status(http.StatusCreated)
 }
 
 func setAuthCookie(c *gin.Context, ticketId string, userId int64, maxAge int) {
