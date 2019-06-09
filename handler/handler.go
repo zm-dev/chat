@@ -46,7 +46,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	router.Use(middleware.NewHandleErrorMiddleware(s.Conf.ServiceName))
 	router.StaticFile("/", "template/index.html")
 
-	api := router.Group("/v1/api")
+	api := router.Group("/api/v1")
 
 	authRouter := api.Group("/auth")
 	// 学生注册
