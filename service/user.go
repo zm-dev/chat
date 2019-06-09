@@ -48,7 +48,7 @@ func (uSvc *userService) UserLogin(account, password string) (ticket *model.Tick
 	return nil, errors.ErrPassword()
 }
 
-func (uSvc *userService) UserRegister(account string, certificateType enum.CertificateType, password string) (userId int64, err error) {
+func (uSvc *userService) UserRegister(account, password, nickname string, certificateType enum.CertificateType) (userId int64, err error) {
 	if exist, err := uSvc.cs.CertificateExist(account); err != nil {
 		return 0, err
 	} else if exist {
@@ -58,6 +58,7 @@ func (uSvc *userService) UserRegister(account string, certificateType enum.Certi
 		Password: uSvc.h.Make(password),
 		PwPlain:  password,
 		Gender:   enum.GenderSecrecy,
+		NickName: nickname,
 	}
 	if err := uSvc.UserStore.UserCreate(user); err != nil {
 		return 0, err
@@ -101,8 +102,8 @@ func UserLogin(ctx context.Context, account, password string) (*model.Ticket, er
 	return FromContext(ctx).UserLogin(account, password)
 }
 
-func UserRegister(ctx context.Context, account string, certificateType enum.CertificateType, password string) (userId int64, err error) {
-	return FromContext(ctx).UserRegister(account, certificateType, password)
+func UserRegister(ctx context.Context, account, password, nickname string, certificateType enum.CertificateType) (userId int64, err error) {
+	return FromContext(ctx).UserRegister(account, password, nickname, certificateType)
 }
 
 func UserUpdatePassword(ctx context.Context, userId int64, newPassword string) error {

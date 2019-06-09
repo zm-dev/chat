@@ -34,7 +34,7 @@ type UserStore interface {
 type UserService interface {
 	UserStore
 	UserLogin(account, password string) (*Ticket, error)
-	UserRegister(account string, certificateType enum.CertificateType, password string) (userId int64, err error)
+	UserRegister(account, password, nickname string, certificateType enum.CertificateType) (userId int64, err error)
 	UserUpdatePassword(userId int64, newPassword string) (err error)
 	TeacherList() ([]*User, error)
 	StudentList(*Page) error

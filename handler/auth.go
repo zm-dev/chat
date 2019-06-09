@@ -14,6 +14,7 @@ import (
 type authHandler struct{}
 
 type Req struct {
+	Nickname string `form:"nickname" json:"nickname"`
 	Account  string `form:"account" json:"account"`
 	Password string `form:"password" json:"password"`
 }
@@ -71,7 +72,8 @@ func (authHandler) Register(c *gin.Context) {
 		_ = c.Error(err)
 		return
 	}
-	_, err := service.UserRegister(c.Request.Context(), strings.TrimSpace(req.Account), enum.CertificateStudent, req.Password)
+	//account, password, nickname string, certificateType enum.CertificateType
+	_, err := service.UserRegister(c.Request.Context(), strings.TrimSpace(req.Account), req.Password, req.Nickname, enum.CertificateStudent)
 	if err != nil {
 		_ = c.Error(err)
 		return

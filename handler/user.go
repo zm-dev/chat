@@ -81,7 +81,7 @@ func (u *userHandler) CreateTeacher(c *gin.Context) {
 	if req.Password == "" {
 		req.Password = req.Account
 	}
-	userId, err := service.UserRegister(c.Request.Context(), req.Account, enum.CertificateTeacher, req.Password)
+	userId, err := service.UserRegister(c.Request.Context(), req.Account, req.Password, req.NickName, enum.CertificateTeacher)
 	if err != nil {
 		_ = c.Error(err)
 		return
@@ -89,7 +89,6 @@ func (u *userHandler) CreateTeacher(c *gin.Context) {
 	err = service.UserUpdate(c.Request.Context(), &model.User{
 		Id:         userId,
 		AvatarHash: req.AvatarHash,
-		NickName:   req.NickName,
 		Profile:    req.Profile,
 		Gender:     enum.Gender(req.Gender),
 		GroupId:    enum.Group(req.GroupId),
