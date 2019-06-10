@@ -115,7 +115,7 @@ func (r *recordHandler) MessageList(c *gin.Context) {
 	}
 	// 输出结果排序
 	sort.Slice(result, func(i, j int) bool {
-		return /*result[i].NotReadMsgCount <= 0 &&*/ result[i].LastMessageSendTime.After(result[j].LastMessageSendTime)
+		return /*result[i].NotReadMsgCount <= 0 &&*/ result[i].LastMessageSendTime.Before(result[j].LastMessageSendTime)
 	})
 	c.JSON(http.StatusOK, result)
 }
