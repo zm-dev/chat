@@ -32,6 +32,7 @@ type MessageRecordListResponse struct {
 	LastMessage         string    `json:"last_message"`
 	IsMeSend            bool      `json:"is_me_send"`
 	NotReadMsgCount     int32     `json:"not_read_msg_count"`
+	IsOnline            bool      `json:"is_online"`
 	LastMessageSendTime time.Time `json:"last_message_send_time"`
 }
 
@@ -89,12 +90,14 @@ func (r *recordHandler) MessageList(c *gin.Context) {
 
 		// 对方用户的信息（我发消息给你 OR 你发消息给我，这里都显示你的基本信息）
 		user := new(model.User)
+		userId := int64(0)
 		if item.FromId == authId {
 			itemMsg.IsMeSend = true
-			user, err = service.UserLoad(c.Request.Context(), item.ToId)
+			userId = item.ToId
 		} else {
-			user, err = service.UserLoad(c.Request.Context(), item.FromId)
+			userId = item.FromId
 		}
+		user, err = service.UserLoad(c.Request.Context(), userId)
 		if err != nil || user.Id == 0 {
 			_ = c.Error(errors.BadRequest("用户不存在"))
 			return
@@ -102,7 +105,7 @@ func (r *recordHandler) MessageList(c *gin.Context) {
 		itemMsg.UserId = user.Id
 		itemMsg.NickName = user.NickName
 		itemMsg.AvatarUrl = r.imageUrl.Generate(user.AvatarHash)
-
+		itemMsg.IsOnline = service.IsOnline(c.Request.Context(), userId)
 		// 消息
 		itemMsg.LastMessage = item.Msg
 		itemMsg.LastMessageSendTime = item.CreatedAt
