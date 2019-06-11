@@ -52,7 +52,7 @@ func (r *dbRecord) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShow
 	queryBuilder.Count(&page.Total)
 	page.SetPages()
 	items := make([]*model.Record, 0, page.Size)
-	err = queryBuilder.Order("created_at DESC").Offset(page.Offset()).Limit(page.Size).Find(&items).Error
+	err = queryBuilder.Order("created_at ASC").Offset(page.Offset()).Limit(page.Size).Find(&items).Error
 	page.Records = items
 	return
 }
