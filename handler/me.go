@@ -39,6 +39,7 @@ func convert2UserResp(c context.Context, user *model.User, imageUrl image_url.UR
 		"name":       user.NickName,
 		"avatarUrl":  imageUrl.Generate(user.AvatarHash),
 		"profile":    user.Profile,
+		"company":    user.Company,
 		"gender":     enum.ParseGender(user.Gender),
 		"group":      enum.ParseGroup(user.GroupId),
 		"is_online":  service.IsOnline(c, user.Id),
