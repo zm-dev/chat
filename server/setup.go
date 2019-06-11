@@ -44,10 +44,10 @@ func setupGorm(debug bool, databaseConfig *config.DatabaseConfig) *gorm.DB {
 		if err == nil {
 			db.LogMode(debug)
 			if debug {
+				// ONLY_FULL_GROUP_BY,
+				db.Exec("set session sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'")
 				autoMigrate(db)
 			}
-			// ONLY_FULL_GROUP_BY,
-			//db.Exec("set session sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'")
 			return db
 		}
 		log.Println(err)
