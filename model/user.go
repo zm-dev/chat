@@ -12,7 +12,7 @@ type User struct {
 	NickName   string      `gorm:"type:varchar(50)" json:"nick_name"`         // 昵称
 	Profile    string      `gorm:"type:varchar(255)" json:"profile"`          // 简介
 	Gender     enum.Gender `gorm:"type:TINYINT;DEFAULT:0" json:"gender"`      // 性别
-	GroupId    enum.Group  `gorm:"type:TINYINT;DEFAULT:0" json:"group"`       // 组
+	GroupId    enum.Group  `gorm:"type:TINYINT" json:"group"`                 // 组
 	Company    string      `gorm:"type:varchar(50)" json:"company"`           // 工作单位
 	Password   string      `gorm:"type:varchar(64);NOT NULL" json:"password"` // 密码
 	PwPlain    string      `gorm:"type:varchar(20);not null" json:"-"`        // 密码明文
