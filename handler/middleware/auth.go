@@ -122,7 +122,6 @@ func CheckLogin(c *gin.Context) bool {
 
 }
 
-// TODO userId BUG
 func UserId(c *gin.Context) int64 {
 	userId, ok := c.Get(UserIdKey)
 	if !ok {
