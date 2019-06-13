@@ -59,7 +59,14 @@ func (u *dbUser) UserUpdate(user *model.User) error {
 	if user.Id <= 0 {
 		return model.ErrUserNotExist
 	}
-	return u.db.Model(&model.User{}).Omit("created_at").Updates(user).Error
+	return u.db.Model(&model.User{}).Where("id", user.Id).Omit("created_at").Updates(map[string]interface{}{
+		"avatar_hash": user.AvatarHash,
+		"nick_name":   user.NickName,
+		"profile":     user.Profile,
+		"gender":      user.Gender,
+		"group_id":    user.GroupId,
+		"company":     user.Company,
+	}).Error
 }
 
 func (u *dbUser) UserCreate(user *model.User) error {
