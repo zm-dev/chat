@@ -35,16 +35,17 @@ func convert2UserListResp(c context.Context, users []*model.User, imageUrl image
 
 func convert2UserResp(c context.Context, user *model.User, imageUrl image_url.URL) map[string]interface{} {
 	return map[string]interface{}{
-		"id":         user.Id,
-		"name":       user.NickName,
-		"avatarUrl":  imageUrl.Generate(user.AvatarHash),
-		"profile":    user.Profile,
-		"company":    user.Company,
-		"gender":     enum.ParseGender(user.Gender),
-		"group":      enum.ParseGroup(user.GroupId),
-		"is_online":  service.IsOnline(c, user.Id),
-		"created_at": user.CreatedAt,
-		"updated_at": user.UpdatedAt,
+		"id":          user.Id,
+		"nick_name":   user.NickName,                      // 更新 name -> nick_name
+		"avatar_url":  imageUrl.Generate(user.AvatarHash), // 更新 avatarUrl -> avatar_url
+		"avatar_hash": user.AvatarHash,                    // 新增
+		"profile":     user.Profile,
+		"company":     user.Company,
+		"gender":      enum.ParseGender(user.Gender),
+		"group":       enum.ParseGroup(user.GroupId),
+		"is_online":   service.IsOnline(c, user.Id),
+		"created_at":  user.CreatedAt,
+		"updated_at":  user.UpdatedAt,
 	}
 }
 
