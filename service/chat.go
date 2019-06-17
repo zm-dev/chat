@@ -21,7 +21,7 @@ func (c *ChatService) IsOnline(userId int64) bool {
 }
 
 func (c *ChatService) SendMsg(userId int64, msg model.IMsg) error {
-	conn, ok := c.userWsConnMap.Load(userId);
+	conn, ok := c.userWsConnMap.Load(msg.GetUserId());
 	if !ok {
 		return errors.New("用户不存在或不在线")
 	}
