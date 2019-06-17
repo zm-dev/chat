@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/gorilla/websocket"
 	"github.com/zm-dev/chat/model"
+	"log"
 	"strconv"
 	"sync"
 	"time"
@@ -43,7 +44,7 @@ func (c *ChatService) OnLine(userId int64, conn *websocket.Conn) {
 			"user_id":  strconv.FormatInt(userId, 10),
 		},
 	}, []int64{userId})
-
+	log.Printf("[OnLine] %d 用户上线啦\n", userId)
 	c.userWsConnMap.Store(userId, conn)
 }
 
@@ -57,7 +58,7 @@ func (c *ChatService) OffLine(userId int64) {
 			"user_id":  strconv.FormatInt(userId, 10),
 		},
 	}, []int64{userId})
-
+	log.Printf("[OffLine] %d 用户退出啦\n", userId)
 	c.userWsConnMap.Delete(userId)
 }
 
