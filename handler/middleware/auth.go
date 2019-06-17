@@ -106,11 +106,16 @@ func check(c *gin.Context) bool {
 	ticketId, err := c.Cookie("ticket_id")
 	if err != nil {
 		isLogin = false
-	} else {
 		ticketId = c.Query("ticket_id")
 	}
 	if ticketId == "" {
-		isLogin = false
+		return false
+	}
+	isValid, userId, err := service.TicketIsValid(c.Request.Context(), ticketId)
+	if err == nil {
+		isLogin = isValid
+		setIsLogin(c, isLogin)
+		setUserId(c, userId)
 	}
 	return isLogin
 }
