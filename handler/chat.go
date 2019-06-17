@@ -47,7 +47,6 @@ func (c *Chat) WsConn(ctx *gin.Context) {
 			break
 		}
 
-
 		recordId, err := service.CreateRecord(ctx.Request.Context(), &model.Record{
 			FromId: userIdInt,
 			ToId:   input.ToUserId,
