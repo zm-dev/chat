@@ -64,7 +64,9 @@ func (c *ChatService) Broadcast(msg model.IMsg, excludeUserId []int64) {
 				return true
 			}
 		}
-		_ = value.(*websocket.Conn).WriteJSON(msg)
+		if value != nil {
+			_ = value.(*websocket.Conn).WriteJSON(msg)
+		}
 		return true
 	})
 }
