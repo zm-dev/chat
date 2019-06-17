@@ -59,13 +59,15 @@ func (m *Msg) SetMeta(meta map[string]string) {
 func (m *Msg) MarshalJSON() ([]byte, error) {
 
 	return json.Marshal(struct {
-		UserId int64     `json:"user_id"`
-		Data   string    `json:"data"`
-		SendAt time.Time `json:"send_at"`
+		UserId int64             `json:"user_id"`
+		Data   string            `json:"data"`
+		SendAt time.Time         `json:"send_at"`
+		Meta   map[string]string `json:"meta"`
 	}{
 		UserId: m.GetUserId(),
 		Data:   string(m.Data),
 		SendAt: m.SendAt,
+		Meta:   m.GetMeta(),
 	})
 }
 
