@@ -7,7 +7,7 @@ import (
 )
 
 type IMsg interface {
-	GetUserId() int64
+	GetSendUserId() int64
 	GetData() []byte
 	GetSendAt() time.Time
 	SetSendAt(time.Time)
@@ -23,7 +23,7 @@ type Msg struct {
 	SendAt     time.Time
 }
 
-func (m *Msg) GetUserId() int64 {
+func (m *Msg) GetSendUserId() int64 {
 	if m == nil {
 		return -1
 	}
@@ -59,13 +59,15 @@ func (m *Msg) SetMeta(meta map[string]string) {
 func (m *Msg) MarshalJSON() ([]byte, error) {
 
 	return json.Marshal(struct {
-		UserId int64     `json:"user_id"`
-		Data   string    `json:"data"`
-		SendAt time.Time `json:"send_at"`
+		SendUserId int64             `json:"send_user_id"`
+		Data       string            `json:"data"`
+		SendAt     time.Time         `json:"send_at"`
+		Meta       map[string]string `json:"meta"`
 	}{
-		UserId: m.GetUserId(),
-		Data:   string(m.Data),
-		SendAt: m.SendAt,
+		SendUserId: m.GetSendUserId(),
+		Data:       string(m.Data),
+		SendAt:     m.SendAt,
+		Meta:       m.GetMeta(),
 	})
 }
 

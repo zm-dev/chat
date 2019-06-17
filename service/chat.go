@@ -21,12 +21,16 @@ func (c *ChatService) IsOnline(userId int64) bool {
 }
 
 func (c *ChatService) SendMsg(userId int64, msg model.IMsg) error {
-	conn, ok := c.userWsConnMap.Load(userId);
+	conn, ok := c.userWsConnMap.Load(userId)
 	if !ok {
 		return errors.New("用户不存在或不在线")
 	}
 
 	msg.SetSendAt(time.Now())
+
+	if conn == nil {
+		return errors.New("用户不存在或不在线")
+	}
 	return conn.(*websocket.Conn).WriteJSON(msg)
 }
 
