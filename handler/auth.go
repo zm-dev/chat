@@ -94,12 +94,14 @@ func (authHandler) Register(c *gin.Context) {
 }
 
 func setAuthCookie(c *gin.Context, ticketId string, userId int64, maxAge int) {
-	c.SetCookie("ticket_id", ticketId, maxAge, "", "", false, true)
+	//TODO httpOnly 临时设置为false
+	c.SetCookie("ticket_id", ticketId, maxAge, "", "", false, false)
 	c.SetCookie("user_id", strconv.FormatInt(userId, 10), maxAge, "", "", false, false)
 }
 
 func removeAuthCookie(c *gin.Context) {
-	c.SetCookie("ticket_id", "", -1, "", "", false, true)
+	//TODO httpOnly 临时设置为false
+	c.SetCookie("ticket_id", "", -1, "", "", false, false)
 	c.SetCookie("user_id", "", -1, "", "", false, false)
 }
 

@@ -91,15 +91,25 @@ func check(c *gin.Context) bool {
 	var (
 		isLogin bool
 	)
-	if ticketId, err := c.Cookie("ticket_id"); err == nil {
-		isValid, userId, err := service.TicketIsValid(c.Request.Context(), ticketId)
-		if err == nil {
-			isLogin = isValid
-			setIsLogin(c, isLogin)
-			setUserId(c, userId)
-		}
+	//if ticketId, err := c.Cookie("ticket_id"); err == nil {
+	//	isValid, userId, err := service.TicketIsValid(c.Request.Context(), ticketId)
+	//	if err == nil {
+	//		isLogin = isValid
+	//		setIsLogin(c, isLogin)
+	//		setUserId(c, userId)
+	//	}
+	//} else {
+	//	// cookie不存在
+	//	isLogin = false
+	//}
+	var ticketId string
+	ticketId, err := c.Cookie("ticket_id")
+	if err != nil {
+		isLogin = false
 	} else {
-		// cookie不存在
+		ticketId = c.Query("ticket_id")
+	}
+	if ticketId == "" {
 		isLogin = false
 	}
 	return isLogin
