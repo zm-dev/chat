@@ -19,8 +19,6 @@ type Input struct {
 	Msg      string `json:"msg"`
 }
 
-
-
 func (c *Chat) WsConn(ctx *gin.Context) {
 	userId, exists := ctx.Get(middleware.UserIdKey)
 	if !exists {
