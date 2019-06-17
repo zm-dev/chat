@@ -26,6 +26,10 @@ func (c *ChatService) SendMsg(userId int64, msg model.IMsg) error {
 	}
 
 	msg.SetSendAt(time.Now())
+
+	if conn == nil {
+		return errors.New("用户不存在或不在线")
+	}
 	return conn.(*websocket.Conn).WriteJSON(msg)
 }
 
