@@ -52,7 +52,7 @@ func (r *dbRecord) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShow
 	queryBuilder.Count(&page.Total)
 	page.SetPages()
 	items := make([]*model.Record, 0, page.Size)
-	err = queryBuilder.Order("created_at ASC").Offset(page.Offset()).Limit(page.Size).Find(&items).Error
+	err = queryBuilder.Order("created_at DESC").Offset(page.Offset()).Limit(page.Size).Find(&items).Error
 	page.Records = items
 	return
 }
@@ -63,6 +63,10 @@ func (r *dbRecord) CreateRecord(record *model.Record) (int64, error) {
 	lastRecord := &model.LastRecord{}
 	userIdA := record.FromId
 	userIdB := record.ToId
+	// 不允许自己和自己发消息
+	if userIdA == userIdB {
+		return 0, nil
+	}
 	r.db.Where("(user_id_a = ? AND user_id_b = ?) OR (user_id_a = ? AND user_id_b = ?)", userIdA, userIdB, userIdB, userIdA).First(&lastRecord)
 
 	tx := r.db.Begin()

@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type Record struct {
 	Id        int64     `gorm:"type:BIGINT AUTO_INCREMENT;PRIMARY_KEY;NOT NUll" json:"id"`
@@ -17,12 +20,7 @@ type LastRecord struct {
 	UserIdB  int64 `gorm:"type:BIGINT;NOT NUll;unique_index:user_id_a_user_id_b_ux" json:"user_id_b"`
 	RecordId int64 `gorm:"type:BIGINT;NOT NUll" json:"record_id"`
 }
-
-type recordList []*Record
-
-func (p recordList) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
-func (p recordList) Len() int           { return len(p) }
-func (p recordList) Less(i, j int) bool { return p[i].IsRead == true }
+ var  ErrFromUserEqualToUser = errors.New("不允许自己和自己聊天")
 
 type RecordStore interface {
 	// 批量设置聊天记录为已读状态
