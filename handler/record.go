@@ -1,15 +1,16 @@
 package handler
 
 import (
+	"net/http"
+	"sort"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/wq1019/go-image_uploader/image_url"
 	"github.com/zm-dev/chat/errors"
 	"github.com/zm-dev/chat/handler/middleware"
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/service"
-	"net/http"
-	"sort"
-	"time"
 )
 
 type recordHandler struct {
@@ -99,8 +100,9 @@ func (r *recordHandler) MessageList(c *gin.Context) {
 		}
 		user, err = service.UserLoad(c.Request.Context(), userId)
 		if err != nil || user.Id == 0 {
-			_ = c.Error(errors.BadRequest("用户不存在"))
-			return
+			// _ = c.Error(errors.BadRequest("用户不存在"))
+			// return
+			continue
 		}
 		itemMsg.UserId = user.Id
 		itemMsg.NickName = user.NickName
