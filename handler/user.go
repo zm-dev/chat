@@ -137,7 +137,7 @@ func (u *userHandler) UserUpdate(c *gin.Context) {
 		_ = c.Error(err)
 		return
 	}
-	ctx.Status(http.StatusNoContent)
+	c.Status(http.StatusNoContent)
 }
 
 func NewUserHandler(imageUrl image_url.URL) *userHandler {
