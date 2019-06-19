@@ -2,8 +2,9 @@ package model
 
 import (
 	"errors"
-	"github.com/zm-dev/chat/enum"
 	"time"
+
+	"github.com/zm-dev/chat/enum"
 )
 
 type User struct {
@@ -29,6 +30,7 @@ type UserStore interface {
 	UserUpdate(*User) error
 	UserCreate(*User) error
 	UserList(uType enum.CertificateType, page *Page) error
+	UserDelete(int64) error
 }
 
 type UserService interface {

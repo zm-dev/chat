@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/wq1019/go-image_uploader/image_url"
 	"github.com/zm-dev/chat/enum"
@@ -8,8 +11,6 @@ import (
 	"github.com/zm-dev/chat/handler/middleware"
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/service"
-	"net/http"
-	"strconv"
 )
 
 type userHandler struct {
@@ -69,6 +70,22 @@ func (u *userHandler) Show(c *gin.Context) {
 	}
 	user, err := service.UserLoad(c.Request.Context(), userId)
 	c.JSON(http.StatusOK, convert2UserResp(c.Request.Context(), user, u.imageUrl))
+}
+
+func (u *userHandler) DeleteUser(c *gin.Context) {
+	userId, err := strconv.ParseInt(c.Param("uid"), 10, 32)
+
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	err = service.DeleteUser(c.Request.Context(), userId)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+	c.JSON(http.StatusNoContent, nil)
 }
 
 func (u *userHandler) CreateTeacher(c *gin.Context) {
