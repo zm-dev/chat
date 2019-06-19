@@ -108,6 +108,8 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	{
 		admin.POST("/teacher", userHandler.CreateTeacher)
 		admin.DELETE("/user", userHandler.DeleteUser)
+		admin.GET("/record", recordHandler.AdminRecordList)
+		admin.GET("/message_list", recordHandler.AdminMessageList)
 	}
 
 	return router
