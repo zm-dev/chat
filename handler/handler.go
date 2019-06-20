@@ -107,7 +107,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	admin.Use(middleware.AdminMiddleware)
 	{
 		admin.POST("/teacher", userHandler.CreateTeacher)
-		admin.DELETE("/user", userHandler.DeleteUser)
+		admin.DELETE("/user/:uid", userHandler.DeleteUser)
 		admin.GET("/record", recordHandler.AdminRecordList)
 		admin.GET("/message_list", recordHandler.AdminMessageList)
 	}
