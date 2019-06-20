@@ -82,6 +82,12 @@ func (u *dbUser) UserListByUserIds(userIds []interface{}) (users []*model.User, 
 	return
 }
 
+func (u *dbUser) UserDelete(userId int64) error {
+	return u.db.Delete(&model.User{
+		Id: userId,
+	}).Error
+}
+
 func NewDBUser(db *gorm.DB) model.UserStore {
 	return &dbUser{db: db}
 }

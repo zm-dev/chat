@@ -1,11 +1,12 @@
 package handler
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/zm-dev/chat/handler/middleware"
 	"github.com/zm-dev/chat/server"
-	"net/http"
-	"strconv"
 )
 
 func getInt32PageAndSize(c *gin.Context) (page, size int32) {
@@ -106,6 +107,9 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	admin.Use(middleware.AdminMiddleware)
 	{
 		admin.POST("/teacher", userHandler.CreateTeacher)
+		admin.DELETE("/user", userHandler.DeleteUser)
+		admin.GET("/record", recordHandler.AdminRecordList)
+		admin.GET("/message_list", recordHandler.AdminMessageList)
 	}
 
 	return router

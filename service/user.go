@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	"github.com/zm-dev/chat/enum"
 	"github.com/zm-dev/chat/errors"
 	"github.com/zm-dev/chat/model"
@@ -116,6 +117,10 @@ func TeacherList(ctx context.Context) ([]*model.User, error) {
 
 func StudentList(ctx context.Context, page *model.Page) error {
 	return FromContext(ctx).StudentList(page)
+}
+
+func DeleteUser(ctx context.Context, userId int64) error {
+	return FromContext(ctx).UserDelete(userId)
 }
 
 func NewUserService(us model.UserStore, cs model.CertificateStore, tSvc model.TicketService, h hasher.Hasher) model.UserService {

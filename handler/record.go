@@ -1,15 +1,16 @@
 package handler
 
 import (
+	"net/http"
+	"sort"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/wq1019/go-image_uploader/image_url"
 	"github.com/zm-dev/chat/errors"
 	"github.com/zm-dev/chat/handler/middleware"
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/service"
-	"net/http"
-	"sort"
-	"time"
 )
 
 type recordHandler struct {
@@ -18,6 +19,15 @@ type recordHandler struct {
 
 type RecordListRequest struct {
 	UserIdB int64 `form:"user_id_b" json:"user_id_b"`
+}
+
+type AdminRecordListRequest struct {
+	FromUserId int64 `form:"from_user_id" json:"from_user_id"`
+	ToUserId   int64 `form:"to_user_id" json:"to_user_id"`
+}
+
+type AdminMessageListRequest struct {
+	UserId int64 `form:"user_id" json:"user_id"`
 }
 
 type BatchSetReadRequest struct {
@@ -42,47 +52,106 @@ func (r *recordHandler) RecordListByUser(c *gin.Context) {
 		_ = c.Error(errors.BindError(err))
 		return
 	}
+
+	authId := middleware.UserId(c)
+
+	result, err := r.recordList(c, authId, req.UserIdB)
+
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
+func (r *recordHandler) AdminRecordList(c *gin.Context) {
+	req := &AdminRecordListRequest{}
+
+	if err := c.ShouldBind(&req); err != nil {
+		_ = c.Error(errors.BindError(err))
+		return
+	}
+
+	result, err := r.recordList(c, req.FromUserId, req.ToUserId)
+
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
+func (r *recordHandler) recordList(c *gin.Context, fromId int64, toId int64) (*model.Page, error) {
+
 	page, size := getInt32PageAndSize(c)
-	userId := middleware.UserId(c)
+
 	result := &model.Page{
 		Current: page,
 		Size:    size,
 	}
-	err := service.PageRecord(c.Request.Context(), result, userId, req.UserIdB, false)
+	err := service.PageRecord(c, result, fromId, toId, false)
 	if err != nil {
-		_ = c.Error(err)
+		return nil, err
 	}
-	c.JSON(http.StatusOK, result)
+	return result, nil
 }
 
-func (r *recordHandler) BatchSetRead(ctx *gin.Context) {
-	userIdInt := middleware.UserId(ctx)
+func (r *recordHandler) BatchSetRead(c *gin.Context) {
+	userIdInt := middleware.UserId(c)
 
 	req := &BatchSetReadRequest{}
 
-	if err := ctx.ShouldBind(&req); err != nil {
-		_ = ctx.Error(errors.BindError(err))
+	if err := c.ShouldBind(&req); err != nil {
+		_ = c.Error(errors.BindError(err))
 		return
 	}
 
-	err := service.BatchSetRead(ctx.Request.Context(), req.RecordIds, userIdInt)
+	err := service.BatchSetRead(c.Request.Context(), req.RecordIds, userIdInt)
 	if err != nil {
-		_ = ctx.Error(err)
+		_ = c.Error(err)
 		return
 	}
 
-	ctx.Status(http.StatusNoContent)
+	c.Status(http.StatusNoContent)
 }
 
 // 与当前用户聊过天的用户列表以及最近的一条消息
 // 最近聊过天的用户列表（如果未读消息超过20条则全部显示，否则显示20条有未读消息和没有未读消息的用户列表）
 func (r *recordHandler) MessageList(c *gin.Context) {
 	authId := middleware.UserId(c)
-	size := 20
-	records, err := service.LastRecordList(c.Request.Context(), authId, size)
+	result, err := r.messageList(c, authId)
 	if err != nil {
 		_ = c.Error(err)
 		return
+	}
+	c.JSON(http.StatusOK, result)
+}
+
+func (r *recordHandler) AdminMessageList(c *gin.Context) {
+	req := &AdminMessageListRequest{}
+
+	if err := c.ShouldBind(&req); err != nil {
+		_ = c.Error(errors.BindError(err))
+		return
+	}
+
+	result, err := r.messageList(c, req.UserId)
+
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, result)
+}
+
+func (r *recordHandler) messageList(c *gin.Context, uid int64) ([]*MessageRecordListResponse, error) {
+
+	size := 20
+	records, err := service.LastRecordList(c.Request.Context(), uid, size)
+	if err != nil {
+		return nil, err
 	}
 	result := make([]*MessageRecordListResponse, 0, len(records))
 	for _, item := range records {
@@ -91,7 +160,7 @@ func (r *recordHandler) MessageList(c *gin.Context) {
 		// 对方用户的信息（我发消息给你 OR 你发消息给我，这里都显示你的基本信息）
 		user := new(model.User)
 		userId := int64(0)
-		if item.FromId == authId {
+		if item.FromId == uid {
 			itemMsg.IsMeSend = true
 			userId = item.ToId
 		} else {
@@ -99,8 +168,9 @@ func (r *recordHandler) MessageList(c *gin.Context) {
 		}
 		user, err = service.UserLoad(c.Request.Context(), userId)
 		if err != nil || user.Id == 0 {
-			_ = c.Error(errors.BadRequest("用户不存在"))
-			return
+			// _ = c.Error(errors.BadRequest("用户不存在"))
+			// return
+			continue
 		}
 		itemMsg.UserId = user.Id
 		itemMsg.NickName = user.NickName
@@ -109,7 +179,7 @@ func (r *recordHandler) MessageList(c *gin.Context) {
 		// 消息
 		itemMsg.LastMessage = item.Msg
 		itemMsg.LastMessageSendTime = item.CreatedAt
-		itemMsg.NotReadMsgCount = service.GetNotReadRecordCount(c.Request.Context(), itemMsg.UserId, authId)
+		itemMsg.NotReadMsgCount = service.GetNotReadRecordCount(c.Request.Context(), itemMsg.UserId, uid)
 
 		result = append(result, itemMsg)
 	}
@@ -117,9 +187,9 @@ func (r *recordHandler) MessageList(c *gin.Context) {
 	sort.Slice(result, func(i, j int) bool {
 		return /*result[i].NotReadMsgCount <= 0 &&*/ result[i].LastMessageSendTime.After(result[j].LastMessageSendTime)
 	})
-	c.JSON(http.StatusOK, result)
-}
 
+	return result, nil
+}
 func NewRecordHandler(imageUrl image_url.URL) *recordHandler {
 	return &recordHandler{imageUrl: imageUrl}
 }
