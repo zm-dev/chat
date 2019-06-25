@@ -91,7 +91,7 @@ func (r *recordHandler) recordList(c *gin.Context, fromId int64, toId int64) (*m
 		Current: page,
 		Size:    size,
 	}
-	err := service.PageRecord(c, result, fromId, toId, false)
+	err := service.PageRecord(c.Request.Context(), result, fromId, toId, false)
 	if err != nil {
 		return nil, err
 	}
