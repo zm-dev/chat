@@ -78,6 +78,10 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 
 		// 批量设置消息为已读状态
 		authorized.PUT("/record/batch_set_read", recordHandler.BatchSetRead)
+
+		// 设置2人全部消息为已读
+		authorized.PUT("/record/set_all_read", recordHandler.SetAllRead)
+
 		// 显示指定用户信息
 		authorized.GET("/user/:uid", userHandler.Show)
 	}

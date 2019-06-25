@@ -22,12 +22,20 @@ func (rSvc *recordService) BatchSetRead(ids []int64, toId int64) error {
 	return rSvc.rs.BatchSetRead(ids, toId)
 }
 
+func (rSvc *recordService) SetAllRead(fromId, toId int64) error {
+	return rSvc.rs.SetAllRead(fromId, toId)
+}
+
 func (rSvc *recordService) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShowNotRead, isOrderAsc bool) (err error) {
 	return rSvc.rs.PageRecord(page, userIdA, userIdB, onlyShowNotRead, isOrderAsc)
 }
 
 func (rSvc *recordService) CreateRecord(record *model.Record) (int64, error) {
 	return rSvc.rs.CreateRecord(record)
+}
+
+func SetAllRead(ctx context.Context, fromId, toId int64) error {
+	return FromContext(ctx).SetAllRead(fromId, toId)
 }
 
 func BatchSetRead(ctx context.Context, ids []int64, toId int64) error {

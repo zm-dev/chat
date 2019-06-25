@@ -45,6 +45,13 @@ func (r *dbRecord) BatchSetRead(ids []int64, toId int64) error {
 	}).Error
 }
 
+func (r *dbRecord) SetAllRead(fromId, toId int64) error {
+	return r.db.Model(&model.Record{}).Where("from_id = ? AND to_id = ? AND is_read = ?", fromId, toId, false).Updates(map[string]interface{}{
+		"is_read":    true,
+		"updated_at": time.Now(),
+	}).Error
+}
+
 func (r *dbRecord) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShowNotRead, isOrderAsc bool) (err error) {
 	var queryBuilder = r.db.Model(&model.Record{}).Where("(from_id = ? AND to_id = ?) OR (from_id = ? AND to_id = ?)", userIdA, userIdB, userIdB, userIdA)
 	if onlyShowNotRead {

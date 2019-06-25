@@ -26,6 +26,10 @@ type AdminRecordListRequest struct {
 	ToUserId   int64 `form:"to_user_id" json:"to_user_id"`
 }
 
+type SetAllReadRequest struct {
+	FromUserId int64 `form:"from_user_id" json:"from_user_id"`
+}
+
 type AdminMessageListRequest struct {
 	UserId int64 `form:"user_id" json:"user_id"`
 }
@@ -96,6 +100,26 @@ func (r *recordHandler) recordList(c *gin.Context, fromId int64, toId int64, isO
 		return nil, err
 	}
 	return result, nil
+}
+
+func (r *recordHandler) SetAllRead(c *gin.Context) {
+
+	userIdInt := middleware.UserId(c)
+
+	req := &SetAllReadRequest{}
+
+	if err := c.ShouldBind(&req); err != nil {
+		_ = c.Error(errors.BindError(err))
+		return
+	}
+	err := service.SetAllRead(c.Request.Context(), req.FromUserId, userIdInt)
+
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }
 
 func (r *recordHandler) BatchSetRead(c *gin.Context) {

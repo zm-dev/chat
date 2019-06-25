@@ -26,6 +26,8 @@ var ErrFromUserEqualToUser = errors.New("不允许自己和自己聊天")
 type RecordStore interface {
 	// 批量设置聊天记录为已读状态
 	BatchSetRead(ids []int64, toId int64) error
+	// 设置2人所有聊天记录为已读
+	SetAllRead(fromId, toId int64) error
 	// 分页获取聊天记录列表，按照创建时间倒序排序
 	PageRecord(page *Page, userIdA, userIdB int64, onlyShowNotRead, isOrderAsc bool) (err error)
 	// 创建一条聊天记录
