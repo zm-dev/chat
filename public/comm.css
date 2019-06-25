@@ -1,0 +1,47 @@
+* {
+    box-sizing: border-box;
+}
+
+.wrapper {
+    width: 500px;
+    margin: 30px auto;
+}
+
+.input {
+    display: flex;
+}
+
+.input .toUser {
+    width: 120px;
+}
+
+.input .msg {
+    flex: 1;
+}
+
+.input > div {
+    padding: 10px;
+}
+
+.input input {
+    width: 100%;
+    padding: 10px;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.btn button {
+    padding: 5px 55px;
+}
+
+.messageList {
+    max-height: 380px;
+    overflow: scroll;
+    padding: 10px;
+    line-height: 16px;
+}

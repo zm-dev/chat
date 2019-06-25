@@ -6,8 +6,8 @@ FROM alpine:3.7
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk update && apk add tzdata
 ENV TZ=Asia/Shanghai
-COPY --from=builder /go/src/github.com/zm-dev/chat/template/ /app/template/
-COPY --from=builder /go/src/github.com/zm-dev/chat/.env /app/.env
+COPY --from=builder /go/src/github.com/zm-dev/chat/public/ /app/public/
+COPY --from=builder /go/src/github.com/zm-dev/chat/.env.example /app/.env
 COPY --from=builder /app/server /app/server
 COPY --from=builder /go/src/github.com/zm-dev/chat/config/config.yml /app/config/config.yml
 WORKDIR /app
