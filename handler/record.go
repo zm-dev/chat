@@ -59,7 +59,7 @@ func (r *recordHandler) RecordListByUser(c *gin.Context) {
 
 	authId := middleware.UserId(c)
 
-	result, err := r.recordList(c, authId, req.UserIdB, true)
+	result, err := r.recordList(c, authId, req.UserIdB, false)
 
 	if err != nil {
 		_ = c.Error(err)
@@ -77,7 +77,7 @@ func (r *recordHandler) AdminRecordList(c *gin.Context) {
 		return
 	}
 
-	result, err := r.recordList(c, req.FromUserId, req.ToUserId, false)
+	result, err := r.recordList(c, req.FromUserId, req.ToUserId, true)
 
 	if err != nil {
 		_ = c.Error(err)
