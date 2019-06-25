@@ -55,14 +55,13 @@ func (r *dbRecord) SetAllRead(fromId, toId int64) error {
 func (r *dbRecord) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShowNotRead, isOrderAsc bool) (err error) {
 	var queryBuilder = r.db.Model(&model.Record{}).Where("(from_id = ? AND to_id = ?) OR (from_id = ? AND to_id = ?)", userIdA, userIdB, userIdB, userIdA)
 	if onlyShowNotRead {
-		queryBuilder.Where("is_read", false)
+		queryBuilder = queryBuilder.Where("is_read", false)
 	}
 	queryBuilder.Count(&page.Total)
 	page.SetPages()
 	items := make([]*model.Record, 0, page.Size)
-
 	if !isOrderAsc {
-		queryBuilder.Order("created_at DESC")
+		queryBuilder = queryBuilder.Order("created_at DESC")
 	}
 	err = queryBuilder.Offset(page.Offset()).Limit(page.Size).Find(&items).Error
 	page.Records = items
