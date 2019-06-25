@@ -16,7 +16,7 @@ type User struct {
 	GroupId    enum.Group  `gorm:"type:TINYINT" json:"group"`                 // 组
 	Company    string      `gorm:"type:varchar(50)" json:"company"`           // 工作单位
 	Password   string      `gorm:"type:varchar(64);NOT NULL" json:"password"` // 密码
-	PwPlain    string      `gorm:"type:varchar(20);not null" json:"-"`        // 密码明文
+	PwPlain    string      `gorm:"type:varchar(20);NOT NULL" json:"-"`        // 密码明文
 	CreatedAt  time.Time   `json:"created_at"`
 	UpdatedAt  time.Time   `json:"updated_at"`
 }
