@@ -22,8 +22,8 @@ func (rSvc *recordService) BatchSetRead(ids []int64, toId int64) error {
 	return rSvc.rs.BatchSetRead(ids, toId)
 }
 
-func (rSvc *recordService) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShowNotRead bool) (err error) {
-	return rSvc.rs.PageRecord(page, userIdA, userIdB, onlyShowNotRead)
+func (rSvc *recordService) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShowNotRead, isOrderAsc bool) (err error) {
+	return rSvc.rs.PageRecord(page, userIdA, userIdB, onlyShowNotRead, isOrderAsc)
 }
 
 func (rSvc *recordService) CreateRecord(record *model.Record) (int64, error) {
@@ -34,8 +34,8 @@ func BatchSetRead(ctx context.Context, ids []int64, toId int64) error {
 	return FromContext(ctx).BatchSetRead(ids, toId)
 }
 
-func PageRecord(ctx context.Context, page *model.Page, userIdA, userIdB int64, onlyShowNotRead bool) (err error) {
-	return FromContext(ctx).PageRecord(page, userIdA, userIdB, onlyShowNotRead)
+func PageRecord(ctx context.Context, page *model.Page, userIdA, userIdB int64, onlyShowNotRead, isOrderAsc bool) (err error) {
+	return FromContext(ctx).PageRecord(page, userIdA, userIdB, onlyShowNotRead, isOrderAsc)
 }
 
 func CreateRecord(ctx context.Context, record *model.Record) (int64, error) {

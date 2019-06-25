@@ -1,9 +1,10 @@
 package db_store
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 	"github.com/zm-dev/chat/model"
-	"time"
 )
 
 type dbRecord struct {
@@ -12,7 +13,7 @@ type dbRecord struct {
 
 func (r *dbRecord) GetNotReadRecordCount(fromId, toId int64) (count int32) {
 	count = 0
-	r.db.Model(&model.Record{}).Where("to_id = ? AND from_id = ? AND is_read = false", toId, fromId).Count(&count);
+	r.db.Model(&model.Record{}).Where("to_id = ? AND from_id = ? AND is_read = false", toId, fromId).Count(&count)
 	return
 }
 
@@ -39,12 +40,12 @@ func (r *dbRecord) LastRecordList(userIdA int64, size int) (records []*model.Rec
 
 func (r *dbRecord) BatchSetRead(ids []int64, toId int64) error {
 	return r.db.Model(&model.Record{}).Where("id IN (?) AND to_id = ?", ids, toId).Updates(map[string]interface{}{
-		"is_read":    1,
+		"is_read":    true,
 		"updated_at": time.Now(),
 	}).Error
 }
 
-func (r *dbRecord) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShowNotRead bool) (err error) {
+func (r *dbRecord) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShowNotRead, isOrderAsc bool) (err error) {
 	var queryBuilder = r.db.Model(&model.Record{}).Where("(from_id = ? AND to_id = ?) OR (from_id = ? AND to_id = ?)", userIdA, userIdB, userIdB, userIdA)
 	if onlyShowNotRead {
 		queryBuilder.Where("is_read", false)
@@ -52,7 +53,11 @@ func (r *dbRecord) PageRecord(page *model.Page, userIdA, userIdB int64, onlyShow
 	queryBuilder.Count(&page.Total)
 	page.SetPages()
 	items := make([]*model.Record, 0, page.Size)
-	err = queryBuilder.Order("created_at DESC").Offset(page.Offset()).Limit(page.Size).Find(&items).Error
+
+	if !isOrderAsc {
+		queryBuilder.Order("created_at DESC")
+	}
+	err = queryBuilder.Offset(page.Offset()).Limit(page.Size).Find(&items).Error
 	page.Records = items
 	return
 }

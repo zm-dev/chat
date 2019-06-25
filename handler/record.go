@@ -55,7 +55,7 @@ func (r *recordHandler) RecordListByUser(c *gin.Context) {
 
 	authId := middleware.UserId(c)
 
-	result, err := r.recordList(c, authId, req.UserIdB)
+	result, err := r.recordList(c, authId, req.UserIdB, true)
 
 	if err != nil {
 		_ = c.Error(err)
@@ -73,7 +73,7 @@ func (r *recordHandler) AdminRecordList(c *gin.Context) {
 		return
 	}
 
-	result, err := r.recordList(c, req.FromUserId, req.ToUserId)
+	result, err := r.recordList(c, req.FromUserId, req.ToUserId, false)
 
 	if err != nil {
 		_ = c.Error(err)
@@ -83,7 +83,7 @@ func (r *recordHandler) AdminRecordList(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-func (r *recordHandler) recordList(c *gin.Context, fromId int64, toId int64) (*model.Page, error) {
+func (r *recordHandler) recordList(c *gin.Context, fromId int64, toId int64, isOrderAsc bool) (*model.Page, error) {
 
 	page, size := getInt32PageAndSize(c)
 
@@ -91,7 +91,7 @@ func (r *recordHandler) recordList(c *gin.Context, fromId int64, toId int64) (*m
 		Current: page,
 		Size:    size,
 	}
-	err := service.PageRecord(c.Request.Context(), result, fromId, toId, false)
+	err := service.PageRecord(c.Request.Context(), result, fromId, toId, false, isOrderAsc)
 	if err != nil {
 		return nil, err
 	}
