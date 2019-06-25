@@ -25,7 +25,7 @@ type UserCreateRequest struct {
 	Profile    string `form:"profile" json:"profile"`         // 简介
 	Company    string `form:"company" json:"company"`         // 工作单位
 	Gender     uint8  `form:"gender" json:"gender"`           // 性别
-	GroupId    uint8  `form:"groupId" json:"groupId"`         // 组
+	GroupId    uint8  `form:"group_id" json:"group_id"`       // 组
 }
 
 type UserUpdateRequest struct {
@@ -106,6 +106,7 @@ func (u *userHandler) CreateTeacher(c *gin.Context) {
 	err = service.UserUpdate(c.Request.Context(), &model.User{
 		Id:         userId,
 		AvatarHash: req.AvatarHash,
+		NickName:   req.NickName,
 		Profile:    req.Profile,
 		Gender:     enum.Gender(req.Gender),
 		GroupId:    enum.Group(req.GroupId),
