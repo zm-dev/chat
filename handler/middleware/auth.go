@@ -38,7 +38,7 @@ func AdminMiddleware(c *gin.Context) {
 		return
 	}
 	if certificate.Type != enum.CertificateAdmin {
-		_ = c.Error(errors.Forbidden("没有权限"))
+		_ = c.Error(errors.Unauthorized("没有权限"))
 		c.Abort()
 		return
 	}
@@ -59,7 +59,7 @@ func TeacherMiddleware(c *gin.Context) {
 		return
 	}
 	if certificate.Type != enum.CertificateTeacher {
-		_ = c.Error(errors.Forbidden("没有权限"))
+		_ = c.Error(errors.Unauthorized("没有权限"))
 		c.Abort()
 		return
 	}
@@ -80,7 +80,7 @@ func StudentMiddleware(c *gin.Context) {
 		return
 	}
 	if certificate.Type != enum.CertificateStudent {
-		_ = c.Error(errors.Forbidden("没有权限"))
+		_ = c.Error(errors.Unauthorized("没有权限"))
 		c.Abort()
 		return
 	}
