@@ -46,7 +46,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	router.Use(middleware.Service(s.Service))
 	router.Use(middleware.NewHandleErrorMiddleware(s.Conf.ServiceName))
 
-	router.Static("/assets", "./public" )
+	router.Static("/assets", "./public")
 	router.StaticFile("/", "public/index.html")
 
 	api := router.Group("/api/v1")
@@ -86,6 +86,9 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 
 		// 显示指定用户信息
 		authorized.GET("/user/:uid", userHandler.Show)
+
+		// 不同类型的用户数量
+		authorized.GET("user_count_by_type", userHandler.UserCountGroupByType)
 	}
 
 	// logged uri: /v1/api/auth
@@ -93,7 +96,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 	{
 		authRoute.GET("/me", meHandler.Show)
 		authRoute.GET("/logout", authHandler.Logout)
-		authRoute.PUT("/me", userHandler.UserUpdate)
+		authRoute.PUT("/me", userHandler.UpdateMeInfo)
 	}
 
 	// student uri: /v1/api/student
@@ -116,6 +119,7 @@ func CreateHTTPHandler(s *server.Server) http.Handler {
 		admin.DELETE("/user/:uid", userHandler.DeleteUser)
 		admin.GET("/record", recordHandler.AdminRecordList)
 		admin.GET("/message_list", recordHandler.AdminMessageList)
+		admin.PUT("/user/:uid", userHandler.UserUpdate)
 	}
 
 	return router

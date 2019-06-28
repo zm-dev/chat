@@ -21,6 +21,7 @@ require (
 	github.com/mailru/easyjson v0.0.0-20190403194419-1ea4449da983 // indirect
 	github.com/mattn/go-isatty v0.0.8 // indirect
 	github.com/micro/go-config v0.13.1
+	github.com/pkg/errors v0.8.1
 	github.com/rs/cors v1.6.0 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/afero v1.2.0

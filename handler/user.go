@@ -8,7 +8,6 @@ import (
 	"github.com/wq1019/go-image_uploader/image_url"
 	"github.com/zm-dev/chat/enum"
 	"github.com/zm-dev/chat/errors"
-	"github.com/zm-dev/chat/handler/middleware"
 	"github.com/zm-dev/chat/model"
 	"github.com/zm-dev/chat/service"
 )
@@ -35,6 +34,7 @@ type UserUpdateRequest struct {
 	Profile    string `form:"profile" json:"profile"`         // 简介
 	Company    string `form:"company" json:"company"`         // 工作单位
 	Gender     uint8  `form:"gender" json:"gender"`           // 性别
+	GroupId    int8   `form:"group_id" json:"group_id"`       // 组
 }
 
 func (u *userHandler) TeacherList(c *gin.Context) {
@@ -70,6 +70,15 @@ func (u *userHandler) Show(c *gin.Context) {
 	}
 	user, err := service.UserLoad(c.Request.Context(), userId)
 	c.JSON(http.StatusOK, convert2UserResp(c.Request.Context(), user, u.imageUrl))
+}
+
+func (u *userHandler) UserCountGroupByType(c *gin.Context) {
+	res, err := service.UserCountWithCertificate(c.Request.Context())
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, res)
 }
 
 func (u *userHandler) DeleteUser(c *gin.Context) {
@@ -125,14 +134,19 @@ func (u *userHandler) UserUpdate(c *gin.Context) {
 		_ = c.Error(errors.BindError(err))
 		return
 	}
-	userId := middleware.UserId(c)
-	err := service.UserUpdate(c.Request.Context(), &model.User{
-		Id:         userId,
+	userId, err := strconv.Atoi(c.Param("uid"))
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+	err = service.UserUpdate(c.Request.Context(), &model.User{
+		Id:         int64(userId),
 		AvatarHash: req.AvatarHash,
 		NickName:   req.NickName,
 		Profile:    req.Profile,
 		Gender:     enum.Gender(req.Gender),
 		Company:    req.Company,
+		GroupId:    enum.Group(req.GroupId),
 	})
 	if err != nil {
 		_ = c.Error(err)

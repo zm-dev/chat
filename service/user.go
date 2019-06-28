@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-
 	"github.com/zm-dev/chat/enum"
 	"github.com/zm-dev/chat/errors"
 	"github.com/zm-dev/chat/model"
@@ -89,6 +88,13 @@ func (uSvc *userService) UserUpdate(user *model.User) error {
 		GroupId:    user.GroupId,
 		Company:    user.Company,
 	})
+}
+
+func (uSvc *userService) UserDelete(id int64) error {
+	if err := uSvc.UserStore.UserDelete(id); err != nil {
+		return err
+	}
+	return uSvc.cs.CertificateDelete(id)
 }
 
 func UserUpdate(ctx context.Context, user *model.User) error {

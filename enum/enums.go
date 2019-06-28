@@ -55,3 +55,17 @@ func ParseGender(g Gender) (gender string) {
 	}
 	return
 }
+
+func ParseCertificateType(t CertificateType) (certificateType string) {
+	switch t {
+	case CertificateAdmin:
+		certificateType = "管理员"
+	case CertificateTeacher:
+		certificateType = "老师"
+	case CertificateStudent:
+		certificateType = "学生"
+	default:
+		certificateType = "其他"
+	}
+	return
+}

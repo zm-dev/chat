@@ -2,12 +2,37 @@ package db_store
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 	"github.com/zm-dev/chat/enum"
 	"github.com/zm-dev/chat/model"
 )
 
 type dbCertificate struct {
 	db *gorm.DB
+}
+
+const (
+	_userCountGroupByTypeSQL = "SELECT `type` AS certificate_type, count(*) AS total FROM `certificates` GROUP BY `type`"
+)
+
+func (c *dbCertificate) CertificateCountGroupByType() ([]*model.CertificateCountResult, error) {
+	rows, err := c.db.Raw(_userCountGroupByTypeSQL).Rows()
+	if err != nil {
+		err = errors.WithStack(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	res := make([]*model.CertificateCountResult, 0, 3)
+	for rows.Next() {
+		r := model.CertificateCountResult{}
+		if err = c.db.ScanRows(rows, &r); err != nil {
+			err = errors.WithStack(err)
+			return nil, err
+		}
+		res = append(res, &r)
+	}
+	return res, err
 }
 
 func (c *dbCertificate) CertificateLoadByUserId(userId int64) (certificate *model.Certificate, err error) {
@@ -29,6 +54,10 @@ func (c *dbCertificate) CertificateExist(account string) (bool, error) {
 		return false, err
 	}
 	return count > 0, nil
+}
+
+func (c *dbCertificate) CertificateDelete(userId int64) error {
+	return c.db.Delete(model.Certificate{UserId: userId}).Error
 }
 
 func (c *dbCertificate) CertificateIsNotExistErr(err error) bool {

@@ -12,13 +12,20 @@ type Certificate struct {
 	Type    enum.CertificateType `gorm:"type:TINYINT"`      // 账号类型（教师；学生；管理员）
 }
 
+type CertificateCountResult struct {
+	CertificateType enum.CertificateType
+	Total           int64
+}
+
 type CertificateStore interface {
 	CertificateExist(account string) (bool, error)
+	CertificateDelete(userId int64) error
 	CertificateLoadByAccount(account string) (*Certificate, error)
 	CertificateLoadByUserId(userId int64) (*Certificate, error)
 	CertificateIsNotExistErr(error) bool
 	CertificateCreate(certificate *Certificate) error
 	CertificateUpdate(oldAccount, newAccount string, certificateType enum.CertificateType) error
+	CertificateCountGroupByType() ([]*CertificateCountResult, error)
 }
 
 var ErrCertificateNotExist = errors.New("certificate not exist")
@@ -29,4 +36,5 @@ func CertificateIsNotExistErr(err error) bool {
 
 type CertificateService interface {
 	CertificateStore
+	UserCountWithCertificate() (map[string]int64, error)
 }
