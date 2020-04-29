@@ -57,7 +57,7 @@ func (c *dbCertificate) CertificateExist(account string) (bool, error) {
 }
 
 func (c *dbCertificate) CertificateDelete(userId int64) error {
-	return c.db.Delete(model.Certificate{UserId: userId}).Error
+	return c.db.Where("user_id = ?", userId).Delete(&model.Certificate{}).Error
 }
 
 func (c *dbCertificate) CertificateIsNotExistErr(err error) bool {
